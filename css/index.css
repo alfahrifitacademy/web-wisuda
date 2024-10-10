@@ -1536,7 +1536,6 @@ main>.underlay {
         margin-bottom: 25px
     }
 }
-
 .footer {
     background: -o-linear-gradient(bottom,rgba(255,255,255,.9),rgba(255,255,255,.9)),-o-linear-gradient(322.64deg,#6a11cb 31.85%,#2575fc 108.53%);
     background: linear-gradient(0deg,rgba(255,255,255,.9),rgba(255,255,255,.9)),linear-gradient(127.36deg,#6a11cb 31.85%,#2575fc 108.53%);
@@ -1544,8 +1543,22 @@ main>.underlay {
     position: relative
 }
 
+.footer_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0;
+}
+
 .footer_block {
-    margin-bottom: 30px
+    flex-grow: 1;
+    flex-basis: 45%; /* Adjust this to control the width of the content blocks */
+    margin-right: 20px;
+    min-width: 300px; /* To ensure the blocks don't become too narrow */
+}
+
+.footer_block-text {
+    line-height: 1.6;
+    max-width: 100%; /* Allow text to take the full width of the block */
 }
 
 .footer_block:last-of-type {
@@ -1553,57 +1566,30 @@ main>.underlay {
 }
 
 .footer_block .logo--footer {
-    margin-bottom: 15px
-}
-
-.footer_block .logo--footer .logo_picture {
-    width: 42px;
-    height: 47px;
-    margin-right: 5px
-}
-
-.footer_block .logo--footer .text {
-    font-size: 12px;
-    margin-bottom: 5px;
-    font-weight: 400
-}
-
-.footer_block .logo--footer .text .brand {
     display: block;
-    font-family: "Barlow Semi Condensed",sans-serif;
-    color: #2b3543;
-    font-size: 32px;
-    line-height: 1.3;
-    margin-bottom: -7px;
-    font-weight: 600
+    text-align: left; /* Memastikan elemen berada di kiri */
+    margin-bottom: 15px;
 }
 
-.footer_block .logo--footer .text_secondary {
-    position: relative;
-    left: 2px
+.footer-logo {
+    width: 100px !important;
+    height: auto !important;
 }
 
-.footer_block-header {
-    margin-bottom: 15px
-}
-
-.footer_block-nav_item {
-    margin-bottom: 10px
-}
-
-.footer_block-nav_item:last-of-type {
-    margin-bottom: 0
-}
+.footer_block .logo--footer img{
+    width: 100px; 
+    height: auto;
+    margin-bottom: 10px; 
 
 
 .footer_block-socials {
     font-size: 20px;
-    margin: 20px 0 5px;
+    margin: 15px 0 5px;
     color: #29323c
 }
 
 .footer_block-socials_item {
-    margin-right: 20px;
+    margin-right: 10px;
     -webkit-transition: .3s ease-in-out;
     -o-transition: .3s ease-in-out;
     transition: .3s ease-in-out
@@ -1654,18 +1640,20 @@ main>.underlay {
 
 .footer_secondary {
     color: #000;
-    padding: 30px 0 60px
+    padding: 15px 0;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .footer_secondary-scroll {
     font-size: 32px;
-    line-height: 1
+    line-height: 1;
 }
 
 .footer_secondary-copyright {
     font-size: 12px;
     line-height: 1;
-    margin-top: 10px
+    margin-top: 10px;
 }
 
 @media screen and (min-width:575.98px) {
@@ -1699,18 +1687,6 @@ main>.underlay {
         padding: 0 20px
     }
 
-    .footer_block[data-order="2"] .footer_block-header {
-        margin-bottom: 10px
-    }
-
-    .footer_block[data-order="3"] .footer_block-header {
-        margin-bottom: 20px
-    }
-
-    .footer_block[data-order="4"] .footer_block-header {
-        margin-bottom: 25px
-    }
-
     .footer_secondary {
         padding-bottom: 80px
     }
@@ -1732,10 +1708,6 @@ main>.underlay {
 
     .footer_block[data-order="1"] .logo--footer {
         margin-bottom: 10px
-    }
-
-    .footer_block[data-order="2"] .footer_block-header {
-        margin-bottom: 20px
     }
 
     .footer_block[data-order="1"],.footer_block[data-order="4"] {
