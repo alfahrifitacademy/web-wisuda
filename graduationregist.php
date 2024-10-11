@@ -15,9 +15,9 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard User</title>
+    <title>Daftar Wisuda</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/graduationregist.css">
 </head>
 
 <body>
@@ -81,11 +81,50 @@ if (!isset($_SESSION['username'])) {
                     <img src="img/customer01.png" alt="pp">
                 </div>
             </div>
-            <div class="welcome-section">
-                <h1>SELAMAT DATANG DI <br> WEBSITE PENDAFTARAN WISUDA</h1>
-                <a href="datawisuda.html" class="btn-daftar">DAFTAR</a>
+            <div class="container2">
+                <h1>DAFTAR WISUDA ONLINE</h1>
+                <form action="process_wisuda.php" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="nama">Nama *</label>
+                        <input type="text" name="nama" id="nama" placeholder="Contoh : Gibran Alfi Ananta" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nim">NIM *</label>
+                        <input type="text" name="nim" id="nim" placeholder="Contoh : 211210032" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jurusan">Jurusan *</label>
+                        <input type="text" name="jurusan" id="jurusan" placeholder="Contoh : Sistem Informasi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fakultas">Fakultas *</label>
+                        <input type="text" name="fakultas" id="fakultas" placeholder="Contoh : Teknologi Informasi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="akte_kelahiran">Akte Kelahiran *</label>
+                        <input type="file" name="akte_kelahiran" id="akte_kelahiran" accept=".jpg,.jpeg,.png,.pdf" required>
+                        <small>Max 5MB</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ijazah">Ijazah *</label>
+                        <input type="file" name="ijazah" id="ijazah" accept=".jpg,.jpeg,.png,.pdf" required>
+                        <small>Max 5MB</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bukti_pembayaran">Bukti Pembayaran *</label>
+                        <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" accept=".jpg,.jpeg,.png,.pdf" required>
+                        <small>Max 5MB</small>
+                    </div>
+
+                    <button type="submit" class="submit-btn">SUBMIT</button>
+                </form>
             </div>
-            
         </div>
     </div>
 

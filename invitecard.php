@@ -15,7 +15,7 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard User</title>
+    <title>Daftar Wisuda</title>
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
@@ -81,11 +81,7 @@ if (!isset($_SESSION['username'])) {
                     <img src="img/customer01.png" alt="pp">
                 </div>
             </div>
-            <div class="welcome-section">
-                <h1>SELAMAT DATANG DI <br> WEBSITE PENDAFTARAN WISUDA</h1>
-                <a href="datawisuda.html" class="btn-daftar">DAFTAR</a>
-            </div>
-            
+         
         </div>
     </div>
 
