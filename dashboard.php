@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Cek apakah pengguna sudah login, jika tidak arahkan ke halaman login
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard User</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
 <body>
@@ -18,7 +28,7 @@
                 <li>
                     <a href="dashboard.html">
                         <span class="icon">
-                            <img src="/img/logo.png" alt="Logo STMIK Bandung">
+                            <img src="img/logo.png" alt="Logo STMIK Bandung">
                         </span>
                         <span class="title">STMIK Bandung</span>
                     </a>
@@ -38,7 +48,7 @@
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
-                        <span class="title">Data Wisuda</span>
+                        <span class="title">Daftar Wisuda</span>
                     </a>
                 </li>
 
@@ -51,7 +61,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/index.html">
+                    <a href="logout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -67,9 +77,8 @@
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-
                 <div class="user">
-                    <img src="/img/customer01.png" alt="">
+                    <img src="img/customer01.png" alt="pp">
                 </div>
             </div>
             <div class="welcome-section">
@@ -81,7 +90,7 @@
     </div>
 
     <!-- =========== Scripts =========  -->
-    <script src="/js/dashboard.js"></script>
+    <script src="js/dashboard.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
