@@ -35,7 +35,7 @@ if (isset($_POST['login'])) {
         $username = $conn->real_escape_string($_POST['username']);
         $password = $_POST['password'];
 
-        $sql = "SELECT * FROM user WHERE nama='$username'";
+        $sql = "SELECT * FROM user WHERE nim='$username'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {

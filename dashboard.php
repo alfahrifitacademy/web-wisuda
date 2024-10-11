@@ -83,7 +83,7 @@ if (!isset($_SESSION['username'])) {
             </div>
             <div class="welcome-section">
                 <h1>SELAMAT DATANG DI <br> WEBSITE PENDAFTARAN WISUDA</h1>
-                <a href="datawisuda.html" class="btn-daftar">DAFTAR</a>
+                <a href="graduationregist.php" class="btn-daftar">DAFTAR</a>
             </div>
             
         </div>
