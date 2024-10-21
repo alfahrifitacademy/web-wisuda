@@ -1252,26 +1252,9 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 
 }
 
-main>.underlay {
-    background: url(../img/placeholder.jpg) center/cover no-repeat
-}
-
 .hero {
     text-align: center;
     padding: 80px 0 20px
-}
-
-.hero_media {
-    margin-top: 20px
-}
-
-.hero_media lottie-player {
-    left: 50%;
-    min-width: 400px;
-    position: relative;
-    -webkit-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    transform: translateX(-50%)
 }
 
 .hero_content-header {
@@ -1299,18 +1282,16 @@ main>.underlay {
     margin-bottom: 10px
 }
 
+.hero_media img {
+    width: 0%; /* Set to 100% to fill the container */
+    max-width: 0px; /* Adjust max-width to control the size */
+    height: auto; /* Maintain aspect ratio */
+}
+
 @media screen and (min-width:575.98px) {
     .hero {
         text-align: left;
         padding-bottom: 0
-    }
-
-    .hero_media {
-        margin-top: 0
-    }
-
-    .hero_media lottie-player {
-        min-width: 600px
     }
 
     .hero_content-header {
@@ -1351,10 +1332,6 @@ main>.underlay {
         padding-top: 100px
     }
 
-    .hero_media lottie-player {
-        min-width: 800px
-    }
-
     .hero_content-text {
         max-width: 450px;
         margin-bottom: 35px
@@ -1365,15 +1342,6 @@ main>.underlay {
     .hero {
         position: relative;
         padding: 200px 0 120px
-    }
-
-    .hero_media {
-        width: 1390px;
-        height: 990px;
-        position: absolute;
-        right: -654px;
-        top: -150px;
-        z-index: -1
     }
 
     .hero_content-header {
@@ -1387,51 +1355,16 @@ main>.underlay {
     .hero_content-text {
         max-width: 500px
     }
-}
 
-@media screen and (min-width:1199.98px) {
     .hero_media {
-        right: -450px
+        width: auto; /* Adjust width of the media section */
+        max-width: 50%; /* Ensure the image section does not take more space than content */
     }
 }
 
 @media screen and (min-width:1399.98px) {
-    .hero_media {
-        right: -400px
-    }
-
     .hero_content {
         width: 630px
-    }
-}
-
-@media screen and (min-width:1599.98px) {
-    .hero_media {
-        right: -274px
-    }
-}
-
-@media screen and (min-width:1799.98px) {
-    .hero_media {
-        right: -235px
-    }
-}
-
-@media screen and (min-width:1999.98px) {
-    .hero_media {
-        right: -144px
-    }
-}
-
-@media screen and (min-width:2199.98px) {
-    .hero_media {
-        right: 0
-    }
-}
-
-@media screen and (min-width:2399.98px) {
-    .hero_media {
-        right: 70px
     }
 }
 
