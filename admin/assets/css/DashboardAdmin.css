@@ -11,6 +11,7 @@
 
 :root {
   --blue: #2a2185;
+  --yellow: #ffa500;
   --white: #fff;
   --gray: #f5f5f5;
   --black1: #222;
@@ -87,6 +88,13 @@ body {
   line-height: 75px;
   text-align: center;
 }
+
+.navigation ul li a .icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Pastikan logo tidak terdistorsi */
+}
+
 .navigation ul li a .icon ion-icon {
   font-size: 1.75rem;
 }
@@ -150,6 +158,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
+  background-color: var(--yellow);
 }
 
 .toggle {
@@ -161,35 +170,6 @@ body {
   align-items: center;
   font-size: 2.5rem;
   cursor: pointer;
-}
-
-.search {
-  position: relative;
-  width: 400px;
-  margin: 0 10px;
-}
-
-.search label {
-  position: relative;
-  width: 100%;
-}
-
-.search label input {
-  width: 100%;
-  height: 40px;
-  border-radius: 40px;
-  padding: 5px 20px;
-  padding-left: 35px;
-  font-size: 18px;
-  outline: none;
-  border: 1px solid var(--black2);
-}
-
-.search label ion-icon {
-  position: absolute;
-  top: 0;
-  left: 10px;
-  font-size: 1.2rem;
 }
 
 .user {
@@ -255,7 +235,7 @@ body {
 .cardBox .card:hover .numbers,
 .cardBox .card:hover .cardName,
 .cardBox .card:hover .iconBx {
-  color: var(--white);
+  color: var(--yellow);
 }
 
 /* ================== Order Details List ============== */

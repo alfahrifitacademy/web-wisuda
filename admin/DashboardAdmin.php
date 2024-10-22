@@ -17,7 +17,7 @@ if (!isset($_SESSION['admin'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../admin/assets/css/DashboardAdmin.css">
 </head>
 
 <body>
@@ -26,16 +26,16 @@ if (!isset($_SESSION['admin'])) {
         <div class="navigation">
             <ul>
                 <li>
-                    <a href="#">
+                    <a href="DashboardAdmin.php">
                         <span class="icon">
-                            <ion-icon name="logo-apple"></ion-icon>
+                            <img src="../img/logo.png" alt="Logo">
                         </span>
-                        <span class="title">Brand Name</span>
+                        <span class="title">STMIK Bandung</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="DashboardAdmin.php">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -48,7 +48,7 @@ if (!isset($_SESSION['admin'])) {
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
-                        <span class="title">Customers</span>
+                        <span class="title">Data Wisuda</span>
                     </a>
                 </li>
 
@@ -57,7 +57,7 @@ if (!isset($_SESSION['admin'])) {
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
-                        <span class="title">Messages</span>
+                        <span class="title">Pengunguman</span>
                     </a>
                 </li>
 
@@ -66,7 +66,7 @@ if (!isset($_SESSION['admin'])) {
                         <span class="icon">
                             <ion-icon name="help-outline"></ion-icon>
                         </span>
-                        <span class="title">Help</span>
+                        <span class="title">Data Mahasiswa</span>
                     </a>
                 </li>
 
@@ -75,7 +75,7 @@ if (!isset($_SESSION['admin'])) {
                         <span class="icon">
                             <ion-icon name="settings-outline"></ion-icon>
                         </span>
-                        <span class="title">Settings</span>
+                        <span class="title">Data Fakultas</span>
                     </a>
                 </li>
 
@@ -84,7 +84,7 @@ if (!isset($_SESSION['admin'])) {
                         <span class="icon">
                             <ion-icon name="lock-closed-outline"></ion-icon>
                         </span>
-                        <span class="title">Password</span>
+                        <span class="title">Data Jurusan</span>
                     </a>
                 </li>
 
@@ -105,16 +105,8 @@ if (!isset($_SESSION['admin'])) {
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-
-                <div class="search">
-                    <label>
-                        <input type="text" placeholder="Search here">
-                        <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                </div>
-
                 <div class="user">
-                    <img src="assets/imgs/customer01.jpg" alt="">
+                    <img src="assets/imgs/customer01.jpg" alt="pp">
                 </div>
             </div>
 
@@ -122,45 +114,45 @@ if (!isset($_SESSION['admin'])) {
             <div class="cardBox">
                 <div class="card">
                     <div>
-                        <div class="numbers">1,504</div>
-                        <div class="cardName">Daily Views</div>
+                        <div class="numbers">100</div>
+                        <div class="cardName">Data Wisuda</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="eye-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">80</div>
-                        <div class="cardName">Sales</div>
+                        <div class="numbers">200</div>
+                        <div class="cardName">Data Mahasiswa</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cart-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">284</div>
-                        <div class="cardName">Comments</div>
+                        <div class="numbers">1</div>
+                        <div class="cardName">Data Fakultas</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="chatbubbles-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
                 <div class="card">
                     <div>
-                        <div class="numbers">$7,842</div>
-                        <div class="cardName">Earning</div>
+                        <div class="numbers">2</div>
+                        <div class="cardName">Data Jurusan</div>
                     </div>
 
                     <div class="iconBx">
-                        <ion-icon name="cash-outline"></ion-icon>
+                        <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
             </div>
@@ -246,7 +238,7 @@ if (!isset($_SESSION['admin'])) {
                 <!-- ================= New Customers ================ -->
                 <div class="recentCustomers">
                     <div class="cardHeader">
-                        <h2>Recent Customers</h2>
+                        <h2>Mahasiswa Terdaftar</h2>
                     </div>
 
                     <table>
@@ -255,72 +247,46 @@ if (!isset($_SESSION['admin'])) {
                                 <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
                             </td>
                             <td>
-                                <h4>David <br> <span>Italy</span></h4>
+                                <h4>GIBRAN ALFI ANANTA<br> <span>3222039</span></h4>
                             </td>
                         </tr>
 
                         <tr>
                             <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
+                                <div class="imgBx"><img src="assets/imgs/customer06.jpg" alt=""></div>
                             </td>
                             <td>
-                                <h4>Amit <br> <span>India</span></h4>
+                                <h4>LEYKA AURA FEBRIANTY<br> <span>3222047</span></h4>
                             </td>
                         </tr>
 
                         <tr>
                             <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
+                                <div class="imgBx"><img src="assets/imgs/customer05.jpg" alt=""></div>
                             </td>
                             <td>
-                                <h4>David <br> <span>Italy</span></h4>
+                                <h4>DARYAT<br> <span>3222021</span></h4>
                             </td>
                         </tr>
 
                         <tr>
                             <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
+                                <div class="imgBx"><img src="assets/imgs/customer07.jpg" alt=""></div>
                             </td>
                             <td>
-                                <h4>Amit <br> <span>India</span></h4>
+                                <h4>TIA SETIAWATI<br> <span>3222019</span></h4>
                             </td>
                         </tr>
 
                         <tr>
                             <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
+                                <div class="imgBx"><img src="assets/imgs/customer04.jpg" alt=""></div>
                             </td>
                             <td>
-                                <h4>David <br> <span>Italy</span></h4>
+                                <h4>NENG NAJWAH<br> <span>3223017</span></h4>
                             </td>
                         </tr>
 
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>Amit <br> <span>India</span></h4>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer01.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>David <br> <span>Italy</span></h4>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>Amit <br> <span>India</span></h4>
-                            </td>
-                        </tr>
                     </table>
                 </div>
             </div>
@@ -328,7 +294,7 @@ if (!isset($_SESSION['admin'])) {
     </div>
 
     <!-- =========== Scripts =========  -->
-    <script src="assets/js/main.js"></script>
+    <script src="../admin/assets/js/main.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

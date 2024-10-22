@@ -1033,7 +1033,13 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 
 .promobar_socials-item a {
     text-decoration: none;
-    color: #333;
+    display: inline-block;
+    color: white; /* Menjamin bahwa warna link juga putih */
+    text-decoration: none;
+}
+
+.promobar_socials-item a:hover {
+    color: #ddd; /* Mengubah warna saat hover menjadi sedikit lebih terang */
 }
 
 .promobar_main a {

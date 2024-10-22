@@ -7525,8 +7525,8 @@
     width: 100%;
     white-space: nowrap;
     -webkit-transition: left .4s,-webkit-transform .4s;
-    transition: left .4s,transform .4s,-webkit-transform .4s;
-    -o-transition: left .4s,transform .4s
+    -o-transition: left .4s,transform .4s;
+    transition: left .4s,transform .4s,-webkit-transform .4s
 }
 
 #baguetteBox-slider.bounce-from-right {
