@@ -23,9 +23,9 @@
                 <button type="submit">Masuk</button>
             </form>
         </div>
-        <footer>
-            <p>Copyright 2024 - Pendaftaran Wisuda STMIK Bandung</p>
-        </footer>
     </div>
+    <footer>
+            <p>Copyright 2024 - Pendaftaran Wisuda STMIK Bandung</p>
+    </footer>
 </body>
 </html>
