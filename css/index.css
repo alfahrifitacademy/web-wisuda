@@ -1283,8 +1283,8 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .hero_media img {
-    width: 0%; /* Set to 100% to fill the container */
-    max-width: 0px; /* Adjust max-width to control the size */
+    width: 100%; /* Set to 100% to fill the container */
+    max-width: 600px; /* Adjust max-width to control the size */
     height: auto; /* Maintain aspect ratio */
 }
 
@@ -1420,8 +1420,10 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .popular_header {
-    text-align: center;
-    margin-bottom: 10px
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center
 }
 
 .popular_header-title {
@@ -1433,22 +1435,23 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
     margin: 0 auto
 }
 
-.popular_btn {
-    margin: 50px auto 0;
-    width: 100%
+.timeline-item {
+    margin: 15px 0;
+    padding: 10px;
 }
 
-@media screen and (min-width:575.98px) {
-    .popular_btn {
-        width: -webkit-fit-content;
-        width: -moz-fit-content;
-        width: fit-content;
-        padding: 0 68px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex
-    }
+.timeline-item h3 {
+    font-size: 30px;
+    color: #333;
+    margin-bottom: 5px;
 }
+
+.timeline-item .date {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+}
+
 
 @media screen and (min-width:767.98px) {
     .popular {
@@ -1479,10 +1482,10 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .footer_block {
-    flex-grow: 1;
+    /* flex-grow: 1;
     flex-basis: 45%; /* Adjust this to control the width of the content blocks */
-    margin-right: 20px;
-    min-width: 300px; /* To ensure the blocks don't become too narrow */
+    margin-right: 20px; 
+    margin-bottom: 30px 
 }
 
 .footer_block-text {
@@ -1495,8 +1498,8 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .footer_block .logo--footer {
-    display: block;
-    text-align: left; /* Memastikan elemen berada di kiri */
+    /* display: block;
+    text-align: left; Memastikan elemen berada di kiri */
     margin-bottom: 15px;
 }
 
@@ -1506,10 +1509,10 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .footer_block .logo--footer img{
-    width: 100px; 
+    width: 150px; 
     height: auto;
     margin-bottom: 10px; 
-
+}
 
 .footer_block-socials {
     font-size: 20px;
