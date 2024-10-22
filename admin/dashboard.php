@@ -35,7 +35,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="DashboardAdmin.php">
+                    <a href="../admin/dashboard.php">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -44,7 +44,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/data_wisuda.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
@@ -53,7 +53,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/pengunguman.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -62,34 +62,34 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/data_mahasiswa.php">
                         <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
+                            <ion-icon name="people-outline"></ion-icon>
                         </span>
                         <span class="title">Data Mahasiswa</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/data_fakultas.php">
                         <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
+                            <ion-icon name="people-outline"></ion-icon>
                         </span>
                         <span class="title">Data Fakultas</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/data_jurusan.php">
                         <span class="icon">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <ion-icon name="people-outline"></ion-icon>
                         </span>
                         <span class="title">Data Jurusan</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="../admin/logout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -157,12 +157,12 @@ if (!isset($_SESSION['admin'])) {
                 </div>
             </div>
 
-            <!-- ================ Order Details List ================= -->
+            <!-- ================ List Data Mahasiswa ================= -->
             <div class="details">
                 <div class="recentOrders">
                     <div class="cardHeader">
-                        <h2>Recent Orders</h2>
-                        <a href="#" class="btn">View All</a>
+                        <h2>Data Mahasiswa terdaftar</h2>
+                        <a href="../admin/DataWisuda.php" class="btn">View All</a>
                     </div>
 
                     <table>
@@ -174,68 +174,10 @@ if (!isset($_SESSION['admin'])) {
                                 <td>Status</td>
                             </tr>
                         </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Star Refrigerator</td>
-                                <td>$1200</td>
-                                <td>Paid</td>
-                                <td><span class="status delivered">Delivered</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Dell Laptop</td>
-                                <td>$110</td>
-                                <td>Due</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Apple Watch</td>
-                                <td>$1200</td>
-                                <td>Paid</td>
-                                <td><span class="status return">Return</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Addidas Shoes</td>
-                                <td>$620</td>
-                                <td>Due</td>
-                                <td><span class="status inProgress">In Progress</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Star Refrigerator</td>
-                                <td>$1200</td>
-                                <td>Paid</td>
-                                <td><span class="status delivered">Delivered</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Dell Laptop</td>
-                                <td>$110</td>
-                                <td>Due</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Apple Watch</td>
-                                <td>$1200</td>
-                                <td>Paid</td>
-                                <td><span class="status return">Return</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Addidas Shoes</td>
-                                <td>$620</td>
-                                <td>Due</td>
-                                <td><span class="status inProgress">In Progress</span></td>
-                            </tr>
-                        </tbody>
                     </table>
                 </div>
 
-                <!-- ================= New Customers ================ -->
+                <!-- ================= List Mahasiswa ================ -->
                 <div class="recentCustomers">
                     <div class="cardHeader">
                         <h2>Mahasiswa Terdaftar</h2>
