@@ -2,7 +2,7 @@
 session_start();
 
 // Koneksi ke database
-$conn = new mysqli('localhost', 'root', '', 'db_wisuda');
+$conn = new mysqli('localhost', 'root', '', 'undangan_wisuda');
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);

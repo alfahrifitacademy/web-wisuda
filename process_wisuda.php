@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     move_uploaded_file($bukti_pembayaran['tmp_name'], $upload_dir . $nim . '_bukti.' . $bukti_extension);
 
     // Simpan data ke database (contoh)
-    $conn = new mysqli('localhost', 'root', '', 'db_wisuda');
+    $conn = new mysqli('localhost', 'root', '', 'undangan_wisuda');
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }

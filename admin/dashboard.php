@@ -17,6 +17,7 @@ if (!isset($_SESSION['admin'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../admin/assets/css/DashboardAdmin.css">
 </head>
 
@@ -159,25 +160,57 @@ if (!isset($_SESSION['admin'])) {
 
             <!-- ================ List Data Mahasiswa ================= -->
             <div class="details">
-                <div class="recentOrders">
+                <div class="recentAnnouncements">
                     <div class="cardHeader">
                         <h2>Data Mahasiswa terdaftar</h2>
-                        <a href="../admin/DataWisuda.php" class="btn">View All</a>
+                        <a href="../admin/data_wisuda.php" class="btn">View All</a>
                     </div>
-
                     <table>
                         <thead>
                             <tr>
-                                <td>Name</td>
-                                <td>Price</td>
-                                <td>Payment</td>
-                                <td>Status</td>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Nim</th>
+                                <th>Fakultas</th>
+                                <th>Jurusan</th>
+                                <th>Status</th>
+                                <th>Dibuat</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <?php
+                            include 'fetch_users.php';
+
+                            if ($result->num_rows > 0) {
+                                $no = 1;
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>
+                                        <td>" . $no++ . "</td>
+                                        <td>" . htmlspecialchars($row['nama']) . "</td>
+                                        <td>" . htmlspecialchars($row['npm']) . "</td>
+                                        <td>" . htmlspecialchars($row['fakultas']) . "</td>
+                                        <td>" . htmlspecialchars($row['jurusan']) . "</td>
+                                        <td>" . ($row['is_admin'] ? 'Admin' : 'Mahasiswa') . "</td>
+                                        <td>" . htmlspecialchars($row['created_at']) . "</td>
+                                        <td class='action-icons'>
+                                            <a href='edit.php?id=" . $row['id_users'] . "'>
+                                                <i class='fas fa-edit'></i>
+                                            </a>
+                                        </td>
+                                    </tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='8'>Tidak ada data.</td></tr>";
+                            }
+
+                            $conn->close();
+                            ?>
+                        </tbody>
                     </table>
                 </div>
 
-                <!-- ================= List Mahasiswa ================ -->
+                <!-- ================= List Mahasiswa ================
                 <div class="recentCustomers">
                     <div class="cardHeader">
                         <h2>Mahasiswa Terdaftar</h2>
@@ -230,7 +263,7 @@ if (!isset($_SESSION['admin'])) {
                         </tr>
 
                     </table>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
