@@ -190,6 +190,31 @@ body {
   object-fit: cover;
 }
 
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+
 /* ======================= Cards ====================== */
 .cardBox {
   position: relative;
@@ -280,10 +305,15 @@ body {
 .details table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  table-layout: auto; /* Membuat kolom menyesuaikan dengan kontennya */
+  /* margin-top: 10px; */
 }
 .details table thead td {
   font-weight: 600;
+  padding: 10px; /* Spasi dalam sel */
+  text-align: left; /* Rata kiri */
+  border-bottom: 1px solid #ddd; /* Garis bawah untuk tiap baris */
+  white-space: nowrap; /* Menghindari teks terpotong */
 }
 .details .recentAnnouncements table tr {
   color: var(--black1);
@@ -350,49 +380,6 @@ body {
   font-weight: 500;
 }
 
-.recentCustomers {
-  position: relative;
-  display: grid;
-  min-height: 500px;
-  padding: 20px;
-  background: var(--white);
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
-  border-radius: 20px;
-}
-.recentCustomers .imgBx {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50px;
-  overflow: hidden;
-}
-.recentCustomers .imgBx img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.recentCustomers table tr td {
-  padding: 12px 10px;
-}
-.recentCustomers table tr td h4 {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.2rem;
-}
-.recentCustomers table tr td h4 span {
-  font-size: 14px;
-  color: var(--black2);
-}
-.recentCustomers table tr:hover {
-  background: var(--blue);
-  color: var(--white);
-}
-.recentCustomers table tr:hover td h4 span {
-  color: var(--white);
-}
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {

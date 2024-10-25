@@ -25,7 +25,7 @@ if (!isset($_SESSION['admin'])) {
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
-            <ul>
+        <ul>
                 <li>
                     <a href="DashboardAdmin.php">
                         <span class="icon">
@@ -36,7 +36,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/DashboardAdmin.php">
+                    <a href="../admin/dashboard.php">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -45,7 +45,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/DataWisuda.php">
+                    <a href="../admin/data_wisuda.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/Pengunguman.php">
+                    <a href="../admin/pengunguman.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/DataMahasiswa.php">
+                    <a href="../admin/data_mahasiswa.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
@@ -72,7 +72,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/DataFakultas.php">
+                    <a href="../admin/data_fakultas.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
@@ -81,7 +81,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/DataJurusan.php">
+                    <a href="../admin/data_jurusan.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
@@ -90,7 +90,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/SignOut.php">
+                    <a href="../admin/logout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>

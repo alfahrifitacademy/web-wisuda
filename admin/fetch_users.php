@@ -5,5 +5,5 @@ $sql = "SELECT users.id_users, users.nama, users.npm, fakultas.fakultas, jurusan
         FROM users AS users
         LEFT JOIN fakultas AS fakultas ON users.fakultas = fakultas.id_fakultas
         LEFT JOIN jurusan AS jurusan ON users.jurusan = jurusan.id_jurusan";
-$result = $conn->query($sql);
+$result = $koneksi->query($sql);
 ?>

@@ -1,14 +1,14 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = ""; // Sesuaikan jika ada password untuk user root
-$dbname = "undangan_wisuda"; // Pastikan nama database sesuai
+$host = 'localhost';  // Nama host server
+$username = 'root';   // Username database (default untuk XAMPP biasanya 'root')
+$password = '';       // Password database (default kosong di XAMPP)
+$database = 'undangan_wisuda';  // Ganti dengan nama database Anda
 
-// Buat koneksi
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Membuat koneksi ke database
+$koneksi = mysqli_connect($host, $username, $password, $database);
 
-// Cek koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+// Cek jika koneksi gagal
+if (!$koneksi) {
+    die('Koneksi database gagal: ' . mysqli_connect_error());
 }
 ?>

@@ -113,158 +113,85 @@ if (!isset($_SESSION['admin'])) {
 
             <!-- ======================= Cards ================== -->
             <div class="cardBox">
-                <div class="card">
+                <div class="card" id="card-wisuda">
                     <div>
-                        <div class="numbers">100</div>
+                        <div class="numbers" id="wisuda"></div>
                         <div class="cardName">Data Wisuda</div>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="card-mahasiswa">
                     <div>
-                        <div class="numbers">200</div>
+                        <div class="numbers" id="mahasiswa"></div>
                         <div class="cardName">Data Mahasiswa</div>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="card-fakultas">
                     <div>
-                        <div class="numbers">1</div>
+                        <div class="numbers" id="fakultas"></div>
                         <div class="cardName">Data Fakultas</div>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="card-jurusan">
                     <div>
-                        <div class="numbers">2</div>
+                        <div class="numbers" id="jurusan"></div>
                         <div class="cardName">Data Jurusan</div>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="people-outline"></ion-icon>
                     </div>
                 </div>
             </div>
 
-            <!-- ================ List Data Mahasiswa ================= -->
-            <div class="details">
-                <div class="recentAnnouncements">
-                    <div class="cardHeader">
-                        <h2>Data Mahasiswa terdaftar</h2>
-                        <a href="../admin/data_wisuda.php" class="btn">View All</a>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>Nim</th>
-                                <th>Fakultas</th>
-                                <th>Jurusan</th>
-                                <th>Status</th>
-                                <th>Dibuat</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            include 'fetch_users.php';
+            <script>
+                // Tambahkan event listener ke setiap card
+                document.getElementById('card-wisuda').addEventListener('click', function() {
+                    window.location.href = '../admin/data_wisuda.php';
+                });
 
-                            if ($result->num_rows > 0) {
-                                $no = 1;
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>
-                                        <td>" . $no++ . "</td>
-                                        <td>" . htmlspecialchars($row['nama']) . "</td>
-                                        <td>" . htmlspecialchars($row['npm']) . "</td>
-                                        <td>" . htmlspecialchars($row['fakultas']) . "</td>
-                                        <td>" . htmlspecialchars($row['jurusan']) . "</td>
-                                        <td>" . ($row['is_admin'] ? 'Admin' : 'Mahasiswa') . "</td>
-                                        <td>" . htmlspecialchars($row['created_at']) . "</td>
-                                        <td class='action-icons'>
-                                            <a href='edit.php?id=" . $row['id_users'] . "'>
-                                                <i class='fas fa-edit'></i>
-                                            </a>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='8'>Tidak ada data.</td></tr>";
-                            }
+                document.getElementById('card-mahasiswa').addEventListener('click', function() {
+                    window.location.href = '../admin/data_mahasiswa.php';
+                });
 
-                            $conn->close();
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+                document.getElementById('card-fakultas').addEventListener('click', function() {
+                    window.location.href = '../admin/data_fakultas.php';
+                });
 
-                <!-- ================= List Mahasiswa ================
-                <div class="recentCustomers">
-                    <div class="cardHeader">
-                        <h2>Mahasiswa Terdaftar</h2>
-                    </div>
+                document.getElementById('card-jurusan').addEventListener('click', function() {
+                    window.location.href = '../admin/data_jurusan.php';
+                });
 
-                    <table>
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer02.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>GIBRAN ALFI ANANTA<br> <span>3222039</span></h4>
-                            </td>
-                        </tr>
+                async function fetchData() {
+                    try {
+                        const response = await fetch('api.php');  // Sesuaikan path jika berbeda
+                        const data = await response.json();
+                        
+                        console.log('Data API:', data);  // Debugging
 
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer06.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>LEYKA AURA FEBRIANTY<br> <span>3222047</span></h4>
-                            </td>
-                        </tr>
+                        // Menampilkan data ke elemen HTML
+                        document.getElementById('wisuda').textContent = data.wisuda || '0';
+                        document.getElementById('mahasiswa').textContent = data.mahasiswa || '0';
+                        document.getElementById('fakultas').textContent = data.fakultas || '0';
+                        document.getElementById('jurusan').textContent = data.jurusan || '0';
+                    } catch (error) {
+                        console.error('Gagal mengambil data:', error);
+                    }
+                }
 
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer05.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>DARYAT<br> <span>3222021</span></h4>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer07.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>TIA SETIAWATI<br> <span>3222019</span></h4>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td width="60px">
-                                <div class="imgBx"><img src="assets/imgs/customer04.jpg" alt=""></div>
-                            </td>
-                            <td>
-                                <h4>NENG NAJWAH<br> <span>3223017</span></h4>
-                            </td>
-                        </tr>
-
-                    </table>
-                </div> -->
-            </div>
+                // Panggil fetchData saat halaman dimuat
+                window.onload = fetchData;
+            </script>
         </div>
     </div>
 
