@@ -115,7 +115,7 @@ if (!isset($_SESSION['admin'])) {
                 <div class="recentAnnouncements">
                     <div class="cardHeader">
                         <h2>Dokumen Mahasiswa Terdaftar</h2>
-                        <a href="../admin/data_wisuda.php" class="btn">View All</a>
+                        <a href="../admin/crud_wisuda.php" class="btn">Tambah Data</a>
                     </div>
                     <table>
                         <thead>

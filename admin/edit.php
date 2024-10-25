@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Mendapatkan data mahasiswa berdasarkan ID untuk ditampilkan di form edit
 $sql = "SELECT * FROM users WHERE id_users = ?";
-$stmt = $conn->prepare($sql);
+$stmt = $koneksi->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -49,7 +49,9 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Data Mahasiswa</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../admin/assets/css/DashboardAdmin.css">
 </head>
 <body>
 
@@ -84,5 +86,5 @@ if ($result->num_rows > 0) {
 
 <?php
 // Menutup koneksi database
-$conn->close();
+$koneksi->close();
 ?>
