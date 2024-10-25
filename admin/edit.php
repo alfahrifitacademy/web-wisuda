@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Query update untuk mengubah data mahasiswa berdasarkan ID
     $sql = "UPDATE users SET nama=?, npm=?, fakultas=?, jurusan=?, is_admin=? WHERE id_users=?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $koneksi->prepare($sql);
     $stmt->bind_param("ssssii", $nama, $npm, $fakultas, $jurusan, $status, $id);
 
     if ($stmt->execute()) {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header('Location: ../admin/dashboard.php');
         exit();
     } else {
-        echo "Terjadi kesalahan saat mengupdate data: " . $conn->error;
+        echo "Terjadi kesalahan saat mengupdate data: " . $koneksi->error;
     }
 }
 

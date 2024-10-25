@@ -7,6 +7,6 @@ session_unset(); // Menghapus variabel-variabel session
 session_destroy(); // Menghancurkan session
 
 // Mengarahkan pengguna kembali ke halaman login setelah logout
-header("Location: index.html");
+header("Location: index.php");
 exit();
 ?>

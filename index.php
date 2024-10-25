@@ -6,10 +6,10 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Home</title>
         <script id="www-widgetapi-script" src="https://s.ytimg.com/yts/jsbin/www-widgetapi-vflS50iB-/www-widgetapi.js" async=""></script>
-        <link rel="stylesheet preload" as="style" href="css/preload.min.css" />
-        <link rel="stylesheet preload" as="style" href="css/icomoon.css" />
-        <link rel="stylesheet preload" as="style" href="css/libs.min.css" />
-        <link rel="stylesheet" href="css/index.css" />
+        <link rel="stylesheet preload" as="style" href="assets/css/preload.min.css" />
+        <link rel="stylesheet preload" as="style" href="assets/css/icomoon.css" />
+        <link rel="stylesheet preload" as="style" href="assets/css/libs.min.css" />
+        <link rel="stylesheet" href="assets/css/index.css" />
     </head>
     <body>
         <div class="promobar d-flex align-items-center">
@@ -37,10 +37,10 @@
                     </li>
                 </ul>
                 <div class="promobar_main d-flex align-items-center">
-                    <a class="btn btn--yellow" href="login.html">
+                    <a class="btn btn--yellow" href="register.php">
                         <span>Daftar</span>
                     </a>
-                    <a class="btn btn--blue" href="login.html">
+                    <a class="btn btn--blue" href="login.php">
                         <span>Masuk</span>
                     </a>
                 </div>
@@ -49,7 +49,7 @@
         <header class="header" data-page="home">
             <div class="container d-flex flex-wrap justify-content-between align-items-center">
                 <div class="logo header_logo">
-                    <a class="d-lg-table" href="index.html">
+                    <a class="d-lg-table" href="index.php">
                         <span class="logo_picture">
                             <img src="img/logo_1.png" alt="STMIK" />
                         </span>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="hero_media col-lg-6">
-                         <img src="img/wisuda.jpg" alt="wisuda">
+                         <img src="assets/img/wisuda.jpg" alt="wisuda">
                     </div>
                 </div>
             </section>
@@ -202,7 +202,7 @@
                 <div class="footer_wrapper">
                     <div class="footer_block">
                         <div class="logo logo--footer">
-                            <a class="d-lg-table" href="index.html">
+                            <a class="d-lg-table" href="index.php">
                                 <span class="logo_picture">
                                     <img src="img/logo_1.png" alt="Logo" />
                                 </span>
@@ -255,6 +255,6 @@
                 </div>
             </div>
         </footer>
-        <script src="js/common.min.js"></script>
+        <script src="assets/js/common.min.js"></script>
     </body>
 </html>

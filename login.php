@@ -1,60 +1,60 @@
 <?php
-session_start();
+session_start(); // Memulai session
 
 // Koneksi ke database
-$koneksi = new mysqli('localhost', 'root', '', 'undangan_wisuda');
+include 'admin/db_connnection.php';
 
-if ($koneksi->connect_error) {
-    die("Connection failed: " . $koneksi->connect_error);
-}
+// Cek apakah form login telah disubmit
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $npm = $_POST['npm'];
+    $password = $_POST['password'];
 
-// Proses pendaftaran
-if (isset($_POST['register'])) {
-    if (isset($_POST['nama']) && isset($_POST['nim']) && isset($_POST['password'])) {
-        $nama = $koneksi->real_escape_string($_POST['nama']);
-        $nim = $koneksi->real_escape_string($_POST['nim']);
-        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    // Query untuk mendapatkan data pengguna berdasarkan NPM
+    $query = "SELECT * FROM users WHERE npm = ?";
+    $stmt = $koneksi->prepare($query);
+    $stmt->bind_param("s", $npm);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $sql = "INSERT INTO user (nama, nim, password) VALUES ('$nama', '$nim', '$password')";
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
 
-        if ($koneksi->query($sql) === TRUE) {
-            header("Location: login.html");
+        // Cek apakah password sesuai
+        if (password_verify($password, $user['password'])) {
+            // Set session dan arahkan ke halaman dashboard
+            $_SESSION['user_id'] = $user['id_users'];
+            $_SESSION['nama'] = $user['nama'];
+            header("Location: dashboard.php");
             exit();
         } else {
-            echo "Error: " . $sql . "<br>" . $koneksi->error;
+            $error = "Password salah!";
         }
     } else {
-        echo "Semua field harus diisi.";
+        $error = "NPM tidak ditemukan!";
     }
 }
-
-// Proses login
-if (isset($_POST['login'])) {
-    // Cek apakah field username dan password diisi
-    if (!empty($_POST['username']) && !empty($_POST['password'])) {
-        $username = $koneksi->real_escape_string($_POST['username']);
-        $password = $_POST['password'];
-
-        $sql = "SELECT * FROM user WHERE nim='$username'";
-        $result = $koneksi->query($sql);
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if (password_verify($password, $row['password'])) {
-                $_SESSION['username'] = $row['nama'];
-                header("Location: dashboard.php");
-                exit();
-            } else {
-                echo "Password salah!";
-            }
-        } else {
-            echo "Username tidak ditemukan!";
-        }
-    } else {
-        echo "Semua field harus diisi.";
-    }
-}
-
-
-$koneksi->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="assets/css/style_regist.css">
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Login</h2>
+    <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
+    <form action="login.php" method="POST">
+        <input type="text" name="npm" placeholder="NPM" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <a href="register.php">Belum punya akun? Daftar</a>
+    </form>
+</div>
+
+</body>
+</html>
