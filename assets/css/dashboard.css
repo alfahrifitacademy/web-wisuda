@@ -188,6 +188,40 @@ body {
   object-fit: cover;
 }
 
+.welcome-section {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #fff;
+  color: var(--blue); /* Warna teks biru gelap */
+  font-family: 'Poppins', sans-serif;
+}
+.welcome-section h1 {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1.4;
+  margin-bottom: 30px;
+}
+.welcome-section .btn-daftar {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: var(--yellow); /* Warna tombol kuning */
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+.welcome-section .btn-daftar:hover {
+  background-color: var(--blue);
+}
+
+
+@media (max-width: 768px) {
+  .welcome-section h1 {
+      font-size: 24px;
+  }
+}
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
