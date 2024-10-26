@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,7 +28,7 @@ if (!isset($_SESSION['user_id'])) {
                 <li>
                     <a href="dashboard.php">
                         <span class="icon">
-                            <img src="assets/img/logo.png" alt="Logo STMIK Bandung">
+                            <img src="assets/img/logo.png" alt="Logo">
                         </span>
                         <span class="title">STMIK Bandung</span>
                     </a>
@@ -41,15 +44,16 @@ if (!isset($_SESSION['user_id'])) {
                 </li>
 
                 <li>
-                    <a href="/daftar_wisuda.php">
+                    <a href="daftar_wisuda.php">
                         <span class="icon">
                             <ion-icon name="people-outline"></ion-icon>
                         </span>
                         <span class="title">Daftar Wisuda</span>
                     </a>
                 </li>
+
                 <li>
-                    <a href="/kartu_undangan.php">
+                    <a href="kartu_undangan.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -66,6 +70,7 @@ if (!isset($_SESSION['user_id'])) {
                 </li>
             </ul>
         </div>
+
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
@@ -76,17 +81,13 @@ if (!isset($_SESSION['user_id'])) {
                     <img src="assets/img/customer01.png" alt="pp">
                 </div>
             </div>
-            <div class="welcome-section">
-                <h1>SELAMAT DATANG DI <br> WEBSITE PENDAFTARAN WISUDA</h1>
-                <a href="/daftar_wisuda.php" class="btn-daftar">DAFTAR</a>
-            </div>
-            
         </div>
     </div>
 
     <!-- =========== Scripts =========  -->
-    <script src="assets/js/common.min.js"></script>
     <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/common.js"></script>
+
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>

@@ -51,7 +51,7 @@
                 <div class="logo header_logo">
                     <a class="d-lg-table" href="index.php">
                         <span class="logo_picture">
-                            <img src="img/logo_1.png" alt="STMIK" />
+                            <img src="assets/img/logo_1.png" alt="STMIK" />
                         </span>
                     </a>
                 </div>

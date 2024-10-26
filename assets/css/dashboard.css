@@ -53,8 +53,8 @@ body {
   position: relative;
   width: 100%;
   list-style: none;
-  border-top-left-radius: 30px;
-  border-bottom-left-radius: 30px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .navigation ul li:hover,
@@ -69,11 +69,12 @@ body {
 
 .navigation ul li a {
   position: relative;
-  display: block;
+  /* display: block; */
   width: 100%;
   display: flex;
   text-decoration: none;
   color: var(--white);
+  align-items: center;
 }
 .navigation ul li:hover a,
 .navigation ul li.hovered a {
@@ -82,11 +83,12 @@ body {
 
 .navigation ul li a .icon {
   position: relative;
-  display: block;
+  display: flexbox;
   min-width: 60px;
   height: 60px;
-  line-height: 75px;
+  line-height: 60px;
   text-align: center;
+  margin-right: 5px; /* Sesuaikan dengan kebutuhan */
 }
 .navigation ul li a .icon img {
   max-width: 100%;
@@ -94,7 +96,8 @@ body {
   object-fit: contain; /* Pastikan logo tidak terdistorsi */
 }
 .navigation ul li a .icon ion-icon {
-  font-size: 1.75rem;
+  font-size: 20px; /* Sesuaikan ukuran */
+  vertical-align: middle;
 }
 
 .navigation ul li a .title {
@@ -134,6 +137,7 @@ body {
   box-shadow: 35px -35px 0 10px var(--white);
   pointer-events: none;
 }
+
 
 /* ===================== Main ===================== */
 .main {
@@ -188,40 +192,81 @@ body {
   object-fit: cover;
 }
 
-.welcome-section {
-  text-align: center;
-  padding: 50px 20px;
-  background-color: #fff;
-  color: var(--blue); /* Warna teks biru gelap */
+/* Style untuk container form */
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Poppins', sans-serif;
 }
-.welcome-section h1 {
-  font-size: 36px;
-  font-weight: bold;
-  line-height: 1.4;
-  margin-bottom: 30px;
+
+/* Style untuk judul dan syarat wisuda */
+.content h2 {
+  text-align: center;
+  color: var(--blue);
+  font-size: 24px;
+  margin-bottom: 10px;
 }
-.welcome-section .btn-daftar {
-  display: inline-block;
-  padding: 15px 30px;
-  background-color: var(--yellow); /* Warna tombol kuning */
-  color: #fff;
-  font-size: 18px;
+
+.content ul {
+  list-style-type: disc;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  color: var(--black1);
+}
+
+.content ul li {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+/* Style untuk label dan input */
+form label {
+  display: block;
+  font-weight: 500;
+  /* margin-bottom: 8px; */
+  color: var(--black1);
+}
+
+form input[type="file"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  /* margin-bottom: 5px; */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  color: var(--black1);
+  cursor: pointer;
+}
+
+form input[type="file"]:hover {
+  border-color: #888;
+}
+
+/* Style untuk tombol submit */
+form button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
   font-weight: bold;
-  text-decoration: none;
-  border-radius: 5px;
+  color: #fff;
+  background-color: var(--yellow); /* Warna tombol */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.welcome-section .btn-daftar:hover {
+
+form button[type="submit"]:hover {
   background-color: var(--blue);
 }
 
-
-@media (max-width: 768px) {
-  .welcome-section h1 {
-      font-size: 24px;
-  }
-}
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
@@ -268,5 +313,17 @@ body {
     position: fixed;
     right: 0;
     left: initial;
+  }
+}
+
+/* Responsive style untuk form */
+@media (max-width: 600px) {
+  .content {
+      padding: 15px;
+  }
+
+  form input[type="file"],
+  form button[type="submit"] {
+      font-size: 14px;
   }
 }
