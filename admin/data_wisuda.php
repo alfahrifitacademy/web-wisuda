@@ -29,7 +29,7 @@ if (!isset($_SESSION['admin'])) {
                 <li>
                     <a href="../admin/dashboard.php">
                         <span class="icon">
-                            <img src="../img/logo.png" alt="Logo">
+                            <img src="../admin/assets/imgs/logo.png" alt="Logo">
                         </span>
                         <span class="title">STMIK Bandung</span>
                     </a>
@@ -110,58 +110,7 @@ if (!isset($_SESSION['admin'])) {
                     <img src="assets/imgs/customer01.jpg" alt="pp">
                 </div>
             </div>
-            <!-- ================ List Dokumen Wisuda ================= -->
-            <div class="details">
-                <div class="recentAnnouncements">
-                    <div class="cardHeader">
-                        <h2>Dokumen Mahasiswa Terdaftar</h2>
-                        <a href="../admin/crud_wisuda.php" class="btn">Tambah Data</a>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>Nim</th>
-                                <th>Fakultas</th>
-                                <th>Jurusan</th>
-                                <th>Status</th>
-                                <th>Dibuat</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            include 'fetch_users.php';
-
-                            if ($result->num_rows > 0) {
-                                $no = 1;
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>
-                                        <td>" . $no++ . "</td>
-                                        <td>" . htmlspecialchars($row['nama']) . "</td>
-                                        <td>" . htmlspecialchars($row['npm']) . "</td>
-                                        <td>" . htmlspecialchars($row['fakultas']) . "</td>
-                                        <td>" . htmlspecialchars($row['jurusan']) . "</td>
-                                        <td>" . ($row['is_admin'] ? 'Admin' : 'Mahasiswa') . "</td>
-                                        <td>" . htmlspecialchars($row['created_at']) . "</td>
-                                        <td class='action-icons'>
-                                            <a href='edit.php?id=" . $row['id_users'] . "'>
-                                                <i class='fas fa-edit'></i>
-                                            </a>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='8'>Tidak ada data.</td></tr>";
-                            }
-
-                            $koneksi->close();
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            
         </div>
     </div>
     

@@ -29,7 +29,7 @@ if (!isset($_SESSION['admin'])) {
                 <li>
                     <a href="DashboardAdmin.php">
                         <span class="icon">
-                            <img src="../img/logo.png" alt="Logo">
+                            <img src="../admin/assets/imgs/logo.png" alt="Logo">
                         </span>
                         <span class="title">STMIK Bandung</span>
                     </a>
