@@ -1,53 +1,59 @@
 <?php
 session_start();
-include '../admin/db_connnection.php'; // Pastikan file ini terhubung ke database
-
 // Periksa apakah admin sudah login
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php"); // Redirect ke login jika belum login
     exit;
 }
 
-// Handle Create (Tambah User)
-if (isset($_POST['tambah'])) {
+// Hubungkan ke database
+include '../admin/db_connnection.php';
+
+// Ambil data users dengan nama fakultas dan jurusan menggunakan JOIN
+$users = mysqli_query($koneksi, "SELECT u.id_users, u.nama, u.npm, f.fakultas, j.jurusan 
+                              FROM users u 
+                              JOIN fakultas f ON u.fakultas = f.id_fakultas 
+                              JOIN jurusan j ON u.jurusan = j.id_jurusan");
+
+// Ambil data fakultas untuk dropdown
+$fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
+
+// Ambil data jurusan untuk dropdown (akan difilter melalui JavaScript)
+$jurusan_data = mysqli_query($koneksi, "SELECT * FROM jurusan");
+
+// Tambah data user
+if (isset($_POST['tambah_user'])) {
     $nama = $_POST['nama'];
     $npm = $_POST['npm'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $fakultas = $_POST['fakultas'];
     $jurusan = $_POST['jurusan'];
-    $is_admin = isset($_POST['is_admin']) ? 1 : 0;
 
-    $query = "INSERT INTO users (nama, npm, password, fakultas, jurusan, is_admin, created_at) 
-              VALUES ('$nama', '$npm', '$password', '$fakultas', '$jurusan', '$is_admin', NOW())";
+    $query = "INSERT INTO users (nama, npm, fakultas, jurusan) VALUES ('$nama', '$npm', '$fakultas', '$jurusan')";
     mysqli_query($koneksi, $query);
     header('Location: data_mahasiswa.php');
 }
 
-// Handle Update (Edit User)
-if (isset($_POST['update'])) {
-    $id = $_POST['id'];
+// Update data user
+if (isset($_POST['update_user'])) {
+    $id_users = $_POST['id_users'];
     $nama = $_POST['nama'];
     $npm = $_POST['npm'];
     $fakultas = $_POST['fakultas'];
     $jurusan = $_POST['jurusan'];
-    $is_admin = isset($_POST['is_admin']) ? 1 : 0;
 
-    $query = "UPDATE users SET nama='$nama', npm='$npm', fakultas='$fakultas', jurusan='$jurusan', is_admin='$is_admin'
-              WHERE id_users='$id'";
+    $query = "UPDATE users SET nama='$nama', npm='$npm', fakultas='$fakultas', jurusan='$jurusan' WHERE id_users='$id_users'";
     mysqli_query($koneksi, $query);
     header('Location: data_mahasiswa.php');
 }
 
-// Handle Delete (Hapus User)
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $query = "DELETE FROM users WHERE id_users='$id'";
+// Hapus data user
+if (isset($_GET['hapus_user'])) {
+    $id_users = $_GET['hapus_user'];
+
+    $query = "DELETE FROM users WHERE id_users='$id_users'";
     mysqli_query($koneksi, $query);
     header('Location: data_mahasiswa.php');
 }
-
-// Ambil semua data pengguna
-$result = mysqli_query($koneksi, "SELECT * FROM users");
 ?>
 
 <!DOCTYPE html>
@@ -143,64 +149,149 @@ $result = mysqli_query($koneksi, "SELECT * FROM users");
             <div class="topbar">
                 <div class="toggle"><ion-icon name="menu-outline"></ion-icon></div>
             </div>
+            <div class="containerTable">
+                <h2>Tabel Mahasiswa</h2>
+                <button id="tambahMahasiswa" onclick="openForm('tambahForm')">Tambah Mahasiswa</button>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari nama..">
 
-            <h2>Data Mahasiswa</h2>
-            <button onclick="document.getElementById('tambahModal').style.display='block'">Tambah User</button>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>NPM</th>
-                        <th>Fakultas</th>
-                        <th>Jurusan</th>
-                        <th>Admin</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                <table id="mahasiswaTable" class="table-mahasiswa">
+                    <thead>
                         <tr>
-                            <td><?= $row['id_users']; ?></td>
-                            <td><?= $row['nama']; ?></td>
-                            <td><?= $row['npm']; ?></td>
-                            <td><?= $row['fakultas']; ?></td>
-                            <td><?= $row['jurusan']; ?></td>
-                            <td><?= $row['is_admin'] ? 'Ya' : 'Tidak'; ?></td>
-                            <td>
-                                <button onclick="editUser(<?= $row['id_users']; ?>)">Edit</button>
-                                <a href="data_mahasiswa.php?delete=<?= $row['id_users']; ?>" onclick="return confirm('Yakin hapus?')">Hapus</a>
-                            </td>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>NPM</th>
+                            <th>Fakultas</th>
+                            <th>Jurusan</th>
+                            <th>Aksi</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php $i = 1;
+                        while ($user = mysqli_fetch_assoc($users)) { ?>
+                            <tr>
+                                <td><?= $i++; ?></td>
+                                <td><?= $user['nama']; ?></td>
+                                <td><?= $user['npm']; ?></td>
+                                <td><?= $user['fakultas']; ?></td>
+                                <td><?= $user['jurusan']; ?></td>
+                                <td class="aksi">
+                                    <button class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?'); location.href='?hapus_user=<?= $user['id_users']; ?>';">Hapus</button>
+                                    <button class="btn-edit" onclick="editUser(<?= $user['id_users']; ?>, '<?= $user['nama']; ?>', '<?= $user['npm']; ?>', '<?= $user['fakultas']; ?>', '<?= $user['jurusan']; ?>')">Edit</button>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
 
-            <div id="tambahModal" style="display:none;">
-                <form method="POST">
-                    <input type="text" name="nama" placeholder="Nama" required>
-                    <input type="text" name="npm" placeholder="NPM" required>
-                    <input type="password" name="password" placeholder="Password" required>
-                    <input type="text" name="fakultas" placeholder="Fakultas" required>
-                    <input type="text" name="jurusan" placeholder="Jurusan" required>
-                    <label><input type="checkbox" name="is_admin"> Admin</label>
-                    <button type="submit" name="tambah">Tambah</button>
-                </form>
+                <!-- Form Tambah Mahasiswa -->
+                <div id="tambahForm" class="form-modal">
+                    <form method="POST">
+                        <h3>Tambah Mahasiswa</h3>
+                        <input type="text" name="nama" placeholder="Nama" required>
+                        <input type="text" name="npm" placeholder="NPM" required>
+
+                        <select name="fakultas" id="fakultasSelect" onchange="filterJurusan('jurusanSelect')" required>
+                            <option value="">Pilih Fakultas</option>
+                            <?php while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
+                                <option value="<?= $fakultas['id_fakultas']; ?>"><?= $fakultas['fakultas']; ?></option>
+                            <?php } ?>
+                        </select>
+
+                        <select name="jurusan" id="jurusanSelect" required>
+                            <option value="">Pilih Jurusan</option>
+                            <?php while ($jurusan = mysqli_fetch_assoc($jurusan_data)) { ?>
+                                <option value="<?= $jurusan['id_jurusan']; ?>" data-fakultas="<?= $jurusan['fakultas_id']; ?>"><?= $jurusan['jurusan']; ?></option>
+                            <?php } ?>
+                        </select>
+
+                        <!-- Tombol tambah tetap berukuran penuh -->
+                        <button type="submit" name="tambah_user">Tambah</button>
+                    </form>
+                </div>
+
+                <!-- Form Edit Mahasiswa -->
+                <div id="editForm" class="form-modal">
+                    <form method="POST">
+                        <h3>Edit Mahasiswa</h3>
+                        <input type="hidden" name="id_users" id="editId">
+                        <input type="text" name="nama" id="editNama" placeholder="Nama" required>
+                        <input type="text" name="npm" id="editNpm" placeholder="NPM" required>
+
+                        <select name="fakultas" id="editFakultasSelect" onchange="filterJurusan('editJurusanSelect')" required>
+                            <option value="">Pilih Fakultas</option>
+                            <?php
+                            mysqli_data_seek($fakultas_data, 0);
+                            while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
+                                <option value="<?= $fakultas['id_fakultas']; ?>"><?= $fakultas['fakultas']; ?></option>
+                            <?php } ?>
+                        </select>
+
+                        <select name="jurusan" id="editJurusanSelect" required>
+                            <option value="">Pilih Jurusan</option>
+                            <?php
+                            mysqli_data_seek($jurusan_data, 0);
+                            while ($jurusan = mysqli_fetch_assoc($jurusan_data)) { ?>
+                                <option value="<?= $jurusan['id_jurusan']; ?>" data-fakultas="<?= $jurusan['fakultas_id']; ?>"><?= $jurusan['jurusan']; ?></option>
+                            <?php } ?>
+                        </select>
+
+                        <!-- Tombol update tetap berukuran penuh -->
+                        <button type="submit" name="update_user">Update</button>
+                    </form>
+                </div>
+
+
+
+                <!-- Overlay -->
+                <div id="overlay" onclick="closeOverlay()" style="display:none;"></div>
+
+                <script>
+                    // Fungsi yang sama seperti sebelumnya
+                    function closeForm(formId) {
+                        document.getElementById(formId).style.display = 'none';
+                        document.getElementById('overlay').style.display = 'none';
+                    }
+
+                    function openForm(formId) {
+                        document.getElementById(formId).style.display = 'block';
+                        document.getElementById('overlay').style.display = 'block';
+                    }
+
+                    function closeOverlay() {
+                        document.getElementById('tambahForm').style.display = 'none';
+                        document.getElementById('editForm').style.display = 'none';
+                        document.getElementById('overlay').style.display = 'none';
+                    }
+
+                    // Filter jurusan berdasarkan fakultas yang dipilih
+                    function filterJurusan(jurusanSelectId) {
+                        var fakultasId = document.getElementById(jurusanSelectId == 'jurusanSelect' ? 'fakultasSelect' : 'editFakultasSelect').value;
+                        var jurusanOptions = document.getElementById(jurusanSelectId).options;
+
+                        for (var i = 0; i < jurusanOptions.length; i++) {
+                            var option = jurusanOptions[i];
+                            option.style.display = option.getAttribute('data-fakultas') == fakultasId ? 'block' : 'none';
+                        }
+                        document.getElementById(jurusanSelectId).value = ""; // Reset nilai jurusan setelah difilter
+                    }
+
+                    // Edit user
+                    function editUser(id, nama, npm, fakultas, jurusan) {
+                        document.getElementById('editId').value = id;
+                        document.getElementById('editNama').value = nama;
+                        document.getElementById('editNpm').value = npm;
+                        document.getElementById('editFakultasSelect').value = fakultas;
+                        filterJurusan('editJurusanSelect');
+                        document.getElementById('editJurusanSelect').value = jurusan;
+                        openForm('editForm');
+                    }
+                </script>
             </div>
-
-            <script>
-                function editUser(id) {
-                    // Logika edit bisa menggunakan modal atau halaman terpisah
-                    alert('Edit User ID: ' + id);
-                }
-            </script>
         </div>
-    </div>
 
-    <script src="../admin/assets/js/main.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+        <script src="../admin/assets/js/main.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
