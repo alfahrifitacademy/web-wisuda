@@ -13,6 +13,15 @@
                 <img src="../login/images/logo.png" alt="Logo">
                 <h2>Admin</h2>
             </div>
+
+            <!-- Notifikasi pesan error -->
+            <?php if (isset($_GET['error'])): ?>
+                <div class="error-message">
+                    <?= htmlspecialchars($_GET['error']); ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Form Login -->
             <form action="../login/login_process.php" method="POST" class="login-form">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="username@gmail.com" required>
@@ -20,12 +29,13 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
 
-                <button type="submit">Masuk</button>
+                <button type="submit" name="login">Masuk</button>
             </form>
         </div>
     </div>
+    
     <footer>
-            <p>Copyright 2024 - Pendaftaran Wisuda STMIK Bandung</p>
+        <p>Copyright 2024 - Pendaftaran Wisuda STMIK Bandung</p>
     </footer>
 </body>
 </html>

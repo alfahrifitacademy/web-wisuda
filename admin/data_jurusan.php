@@ -16,31 +16,72 @@ $jurusan_data = mysqli_query($koneksi, "SELECT j.id_jurusan, j.jurusan, f.fakult
 // Tambah data jurusan
 if (isset($_POST['tambah_jurusan'])) {
     $jurusan = $_POST['jurusan'];
-    $fakultas_id = $_POST['fakultas'];
+    $fakultas_id = $_POST['fakultas_id'];
 
-    $query = "INSERT INTO jurusan (jurusan, fakultas_id) VALUES ('$jurusan', '$fakultas_id')";
-    mysqli_query($koneksi, $query);
+    // Pastikan fakultas_id tidak kosong
+    if (!empty($fakultas_id)) {
+        $query = "INSERT INTO jurusan (jurusan, fakultas_id) VALUES ('$jurusan', '$fakultas_id')";
+        if (mysqli_query($koneksi, $query)) {
+            echo "<script>alert('Jurusan berhasil ditambahkan');</script>";
+        } else {
+            echo "<script>alert('Gagal menambahkan jurusan');</script>";
+        }
+    } else {
+        echo "<script>alert('Pilih fakultas terlebih dahulu');</script>";
+    }
     header('Location: data_jurusan.php');
+    exit;
 }
+
+
+// Ambil data jurusan dengan join ke tabel fakultas
+$jurusan_data = mysqli_query($koneksi, "
+    SELECT j.id_jurusan, j.jurusan, j.fakultas_id, f.fakultas
+    FROM jurusan j
+    JOIN fakultas f ON j.fakultas_id = f.id_fakultas
+    ORDER BY j.id_jurusan ASC
+");
+
 
 // Update data jurusan
 if (isset($_POST['update_jurusan'])) {
     $id_jurusan = $_POST['id_jurusan'];
     $jurusan = $_POST['jurusan'];
-    $fakultas_id = $_POST['fakultas'];
+    $fakultas_id = $_POST['fakultas_id'];
 
-    $query = "UPDATE jurusan SET jurusan='$jurusan', fakultas_id='$fakultas_id' WHERE id_jurusan='$id_jurusan'";
-    mysqli_query($koneksi, $query);
+    // Validasi fakultas_id tidak kosong
+    if (!empty($fakultas_id)) {
+        $query = "UPDATE jurusan SET jurusan='$jurusan', fakultas_id='$fakultas_id' WHERE id_jurusan='$id_jurusan'";
+        if (mysqli_query($koneksi, $query)) {
+            echo "<script>alert('Jurusan berhasil diperbarui');</script>";
+        } else {
+            echo "<script>alert('Gagal memperbarui jurusan');</script>";
+        }
+    } else {
+        echo "<script>alert('Pilih fakultas terlebih dahulu');</script>";
+    }
+
+    // Refresh halaman setelah update
     header('Location: data_jurusan.php');
+    exit;
 }
+
 
 // Hapus data jurusan
 if (isset($_GET['hapus_jurusan'])) {
     $id_jurusan = $_GET['hapus_jurusan'];
 
+    // Query DELETE untuk menghapus data jurusan
     $query = "DELETE FROM jurusan WHERE id_jurusan='$id_jurusan'";
-    mysqli_query($koneksi, $query);
+    if (mysqli_query($koneksi, $query)) {
+        echo "<script>alert('Jurusan berhasil dihapus');</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus jurusan');</script>";
+    }
+
+    // Refresh halaman setelah penghapusan
     header('Location: data_jurusan.php');
+    exit;
 }
 
 // Ambil data fakultas untuk dropdown
@@ -93,7 +134,7 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                 </li>
 
                 <li>
-                    <a href="../admin/pengunguman.php">
+                    <a href="../admin/pengumuman.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -152,8 +193,8 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
 
             <div class="containerTable">
                 <h2>Tabel Jurusan</h2>
+                <!-- Tombol Tambah Jurusan -->
                 <button id="tambahJurusan" onclick="openForm('tambahForm')">Tambah Jurusan</button>
-
                 <table id="jurusanTable" class="table-jurusan">
                     <thead>
                         <tr>
@@ -171,8 +212,8 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                                 <td><?= $jurusan['jurusan']; ?></td>
                                 <td><?= $jurusan['fakultas']; ?></td>
                                 <td class="aksi">
-                                    <button class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus jurusan ini?'); location.href='?hapus_jurusan=<?= $jurusan['id_jurusan']; ?>';">Hapus</button>
-                                    <button class="btn-edit" onclick="editJurusan(<?= $jurusan['id_jurusan']; ?>, '<?= $jurusan['jurusan']; ?>')">Edit</button>
+                                    <button class="btn-edit" onclick="editJurusan(<?= $jurusan['id_jurusan']; ?>, '<?= addslashes($jurusan['jurusan']); ?>')">Edit</button>
+                                    <button class="btn-hapus" onclick="hapusJurusan(<?= $jurusan['id_jurusan']; ?>)">Hapus</button>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -180,14 +221,17 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                 </table>
 
                 <!-- Form Tambah Jurusan -->
-                <div id="tambahForm" style="display:none;">
-                    <button class="close-icon" onclick="closeForm('tambahForm')">&times;</button>
+                <div id="tambahForm" class="form-modal" style="display: none;">
+                    <!-- <button class="close-icon" onclick="closeForm('tambahForm')">&times;</button> -->
                     <form method="POST">
                         <h3>Tambah Jurusan</h3>
                         <input type="text" name="jurusan" placeholder="Nama Jurusan" required>
-                        <select name="fakultas" required>
+                        <select name="fakultas_id" required>
                             <option value="">Pilih Fakultas</option>
-                            <?php while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
+                            <?php
+                            // Ambil data fakultas
+                            $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
+                            while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
                                 <option value="<?= $fakultas['id_fakultas']; ?>"><?= $fakultas['fakultas']; ?></option>
                             <?php } ?>
                         </select>
@@ -196,16 +240,17 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                 </div>
 
                 <!-- Form Edit Jurusan -->
-                <div id="editForm" style="display:none;">
-                    <button class="close-icon" onclick="closeForm('editForm')">&times;</button>
+                <div id="editForm" class="form-modal" style="display: none;">
+                    <!-- <button class="close-icon" onclick="closeForm('editForm')">&times;</button> -->
                     <form method="POST">
                         <h3>Edit Jurusan</h3>
                         <input type="hidden" name="id_jurusan" id="editId">
-                        <input type="text" name="jurusan" id="editNamaJurusan" required>
-                        <select name="fakultas" id="editFakultas" required>
+                        <input type="text" name="jurusan" id="editNamaJurusan" placeholder="Nama Jurusan" required>
+                        <select name="fakultas_id" id="editFakultasId" required>
                             <option value="">Pilih Fakultas</option>
                             <?php
-                            mysqli_data_seek($fakultas_data, 0);
+                            // Ambil data fakultas untuk dropdown
+                            $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                             while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
                                 <option value="<?= $fakultas['id_fakultas']; ?>"><?= $fakultas['fakultas']; ?></option>
                             <?php } ?>
@@ -213,16 +258,22 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                         <button type="submit" name="update_jurusan">Update</button>
                     </form>
                 </div>
+
+
+                <!-- Overlay -->
+                <div id="overlay" onclick="closeOverlay()" style="display: none;"></div>
             </div>
 
-            <script>
-                // Fungsi untuk membuka form edit dan mengisi data jurusan yang dipilih
-                function editJurusan(id, nama, fakultasId) {
-                    document.getElementById('editId').value = id;
-                    document.getElementById('editNamaJurusan').value = nama;
 
-                    // Menetapkan fakultas yang dipilih
-                    var fakultasSelect = document.getElementById('editFakultas');
+            <script>
+                // Fungsi untuk membuka form edit dengan data yang dipilih
+                function editJurusan(id, namaJurusan, fakultasId) {
+                    // Isi nilai input form edit
+                    document.getElementById('editId').value = id;
+                    document.getElementById('editNamaJurusan').value = namaJurusan;
+
+                    // Mengatur pilihan fakultas di dropdown form edit
+                    var fakultasSelect = document.getElementById('editFakultasId');
                     for (var i = 0; i < fakultasSelect.options.length; i++) {
                         if (fakultasSelect.options[i].value == fakultasId) {
                             fakultasSelect.options[i].selected = true;
@@ -230,6 +281,7 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                         }
                     }
 
+                    // Tampilkan form edit
                     openForm('editForm');
                 }
 
@@ -243,10 +295,16 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                     document.getElementById(formId).style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
                 }
+
+                // Fungsi untuk menghapus jurusan dengan konfirmasi
+                function hapusJurusan(id) {
+                    if (confirm('Apakah Anda yakin ingin menghapus jurusan ini?')) {
+                        // Redirect ke URL dengan parameter hapus_jurusan
+                        window.location.href = '?hapus_jurusan=' + id;
+                    }
+                }
             </script>
 
-            <!-- Overlay untuk background form -->
-            <div id="overlay" onclick="closeOverlay()" style="display:none;"></div>
         </div>
     </div>
 

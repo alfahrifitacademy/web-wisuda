@@ -204,7 +204,7 @@
                         <div class="logo logo--footer">
                             <a class="d-lg-table" href="index.php">
                                 <span class="logo_picture">
-                                    <img src="img/logo_1.png" alt="Logo" />
+                                    <img src="assets/img/logo_1.png" alt="Logo" />
                                 </span>
                             </a>
                         </div>

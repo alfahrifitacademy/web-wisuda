@@ -54,7 +54,7 @@ if (!isset($_SESSION['admin'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/pengunguman.php">
+                    <a href="../admin/pengumuman.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -107,8 +107,11 @@ if (!isset($_SESSION['admin'])) {
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
                 <div class="user">
-                    <img src="assets/imgs/customer01.jpg" alt="pp">
+                    <a href="profile_settings.php">
+                        <img src="/web-wisuda2/assets/img/customer01.png" alt="pp" style="cursor: pointer;">
+                    </a>
                 </div>
+
             </div>
 
             <!-- ======================= Cards ================== -->
@@ -174,10 +177,10 @@ if (!isset($_SESSION['admin'])) {
 
                 async function fetchData() {
                     try {
-                        const response = await fetch('api.php');  // Sesuaikan path jika berbeda
+                        const response = await fetch('api.php'); // Sesuaikan path jika berbeda
                         const data = await response.json();
-                        
-                        console.log('Data API:', data);  // Debugging
+
+                        console.log('Data API:', data); // Debugging
 
                         // Menampilkan data ke elemen HTML
                         document.getElementById('wisuda').textContent = data.wisuda || '0';

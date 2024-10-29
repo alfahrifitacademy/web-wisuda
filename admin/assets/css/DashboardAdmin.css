@@ -222,6 +222,193 @@ body {
   box-sizing: border-box;
 }
 
+/* Tabel data wisuda */
+.table-wisuda {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table-wisuda thead th {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-wisuda tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: top;
+  text-align: center;
+}
+
+/* Tombol berkas dengan ikon */
+.btn-berkas {
+  padding: 8px 12px;
+  margin: 2px;
+  background-color: #ffc107; /* Warna kuning */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-berkas:hover {
+  background-color: #e0a800; /* Kuning lebih gelap saat hover */
+}
+
+/* Ikon status */
+.text-pending {
+  color: #f0ad4e; /* Warna oranye untuk pending */
+  margin-right: 5px;
+}
+
+.text-approve {
+  color: #28a745; /* Warna hijau untuk approve */
+  margin-right: 5px;
+}
+
+/* Tombol Lihat File */
+.btn-view {
+  padding: 5px 10px;
+  margin: 2px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  background-color: #218838;
+}
+
+/* Tombol Aksi */
+.table-wisuda .btn-edit,
+.table-wisuda .btn-hapus {
+  padding: 8px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+}
+
+.table-wisuda .btn-edit {
+  background-color: #007bff;
+}
+
+.table-wisuda .btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.table-wisuda .btn-hapus {
+  background-color: #dc3545;
+}
+
+.table-wisuda .btn-hapus:hover {
+  background-color: #c82333;
+}
+
+/* Tombol Tambah Pengumuman */
+.containerTable button#tambahpengumuman {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.containerTable button#tambahpengumuman:hover {
+  background-color: #0056b3;
+}
+
+/* Input pencarian */
+#searchInput {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Styling tabel pengumuman */
+.table-pengumuman {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table-pengumuman thead th {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.table-pengumuman tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: top; /* Selaras ke atas */
+  text-align: left;  /* Teks dalam sel berada di tengah */
+}
+
+.table-pengumuman tbody td.aksi {
+  display: flex;
+  flex-direction: column; /* Menempatkan tombol secara vertikal */
+  justify-content: space-around; /* Menyebarkan tombol dengan jarak seimbang */
+  align-items: center;    /* Menyelaraskan tombol di tengah */
+  height: 100%;           /* Mengisi tinggi sel */
+  gap: 5px;               /* Jarak antar tombol */
+}
+
+/* Styling untuk isi pengumuman di tabel */
+.pengumuman-content {
+  white-space: pre-wrap;  /* Membungkus teks, termasuk karakter newline */
+  word-wrap: break-word;  /* Memastikan teks panjang terbungkus dengan baik */
+  max-width: 400px;       /* Batas lebar kolom (bisa disesuaikan) */
+  overflow: hidden;
+}
+
+/* Tombol aksi di tabel pengumuman */
+.table-pengumuman .btn-edit,
+.table-pengumuman .btn-hapus {
+  padding: 8px 12px;
+  margin: 2px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+  width: 80px; /* Lebar tetap untuk tombol */
+}
+
+/* Tombol Edit berwarna biru */
+.table-pengumuman .btn-edit {
+  background-color: #007bff;
+}
+
+.table-pengumuman .btn-edit:hover {
+  background-color: #0056b3;
+}
+
+/* Tombol Hapus berwarna merah */
+.table-pengumuman .btn-hapus {
+  background-color: #dc3545;
+}
+
+.table-pengumuman .btn-hapus:hover {
+  background-color: #c82333;
+}
+
 /* Tombol Tambah Mahasiswa di pojok kanan atas */
 .containerTable button#tambahMahasiswa {
   position: absolute;
@@ -297,7 +484,6 @@ body {
   background-color: #c82333;
 }
 
-
 /* Modal Form Umum untuk Tambah/Edit Mahasiswa */
 .form-modal {
   display: none;
@@ -312,7 +498,6 @@ body {
   z-index: 1000;
   max-width: 400px; /* Batas lebar modal */
   width: 90%;       /* Responsif */
-  position: relative; /* Untuk mengatur posisi tombol close */
 }
 
 /* Header untuk form modal */
@@ -353,6 +538,12 @@ body {
   background-color: #0056b3;
 }
 
+/* Styling label dan input di dalam form */
+.form-modal label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
 /* Overlay untuk background modal */
 #overlay {
@@ -365,7 +556,6 @@ body {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
-
 
 /* Styling khusus untuk tabel di data_fakultas.php */
 .containerTable button#tambahFakultas {

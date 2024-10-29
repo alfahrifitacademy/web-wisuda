@@ -21,6 +21,21 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
 // Ambil data jurusan untuk dropdown (akan difilter melalui JavaScript)
 $jurusan_data = mysqli_query($koneksi, "SELECT * FROM jurusan");
 
+// Ambil data pencarian dari input pengguna
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Query untuk mendapatkan data mahasiswa dengan filter pencarian
+$sql = "SELECT u.id_users, u.nama, u.npm, f.fakultas, j.jurusan 
+        FROM users u 
+        JOIN fakultas f ON u.fakultas = f.id_fakultas 
+        JOIN jurusan j ON u.jurusan = j.id_jurusan 
+        WHERE u.nama LIKE '%$search%' 
+        OR u.npm LIKE '%$search%' 
+        OR f.fakultas LIKE '%$search%' 
+        OR j.jurusan LIKE '%$search%' 
+        ORDER BY u.id_users ASC";
+$users = mysqli_query($koneksi, $sql);
+
 // Tambah data user
 if (isset($_POST['tambah_user'])) {
     $nama = $_POST['nama'];
@@ -46,14 +61,70 @@ if (isset($_POST['update_user'])) {
     header('Location: data_mahasiswa.php');
 }
 
-// Hapus data user
+// Hapus data pengguna
 if (isset($_GET['hapus_user'])) {
     $id_users = $_GET['hapus_user'];
 
+    // Query DELETE untuk menghapus data pengguna
     $query = "DELETE FROM users WHERE id_users='$id_users'";
-    mysqli_query($koneksi, $query);
+    if (mysqli_query($koneksi, $query)) {
+        echo "<script>alert('Pengguna berhasil dihapus');</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus pengguna');</script>";
+    }
+
+    // Refresh halaman setelah penghapusan
     header('Location: data_mahasiswa.php');
+    exit;
 }
+
+// Hapus data terkait dan pengguna
+if (isset($_GET['hapus_user'])) {
+    $id_users = $_GET['hapus_user'];
+
+    // Hapus data terkait di tabel dokumen
+    $query_dokumen = "DELETE FROM dokumen WHERE create_by='$id_users'";
+    mysqli_query($koneksi, $query_dokumen);
+
+    // Hapus data terkait di tabel guest
+    $query_guest = "DELETE FROM guest WHERE create_by='$id_users'";
+    mysqli_query($koneksi, $query_guest);
+
+    // Hapus data pengguna di tabel users
+    $query_users = "DELETE FROM users WHERE id_users='$id_users'";
+    if (mysqli_query($koneksi, $query_users)) {
+        echo "<script>alert('Pengguna dan data terkait berhasil dihapus');</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus pengguna');</script>";
+    }
+
+    // Refresh halaman setelah penghapusan
+    header('Location: data_mahasiswa.php');
+    exit;
+}
+
+
+// Hapus data dokumen yang terkait dengan pengguna
+if (isset($_GET['hapus_user'])) {
+    $id_users = $_GET['hapus_user'];
+
+    // Hapus data terkait di tabel dokumen
+    $query_dokumen = "DELETE FROM dokumen WHERE create_by='$id_users'";
+    mysqli_query($koneksi, $query_dokumen);
+
+    // Hapus data pengguna di tabel users
+    $query_users = "DELETE FROM users WHERE id_users='$id_users'";
+    if (mysqli_query($koneksi, $query_users)) {
+        echo "<script>alert('Pengguna dan data terkait berhasil dihapus');</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus pengguna');</script>";
+    }
+
+    // Refresh halaman setelah penghapusan
+    header('Location: data_mahasiswa.php');
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -99,7 +170,7 @@ if (isset($_GET['hapus_user'])) {
                 </li>
 
                 <li>
-                    <a href="../admin/pengunguman.php">
+                    <a href="../admin/pengumuman.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>
                         </span>
@@ -151,8 +222,12 @@ if (isset($_GET['hapus_user'])) {
             </div>
             <div class="containerTable">
                 <h2>Tabel Mahasiswa</h2>
+                <!-- Form Pencarian -->
+                <form method="GET" action="data_mahasiswa.php" style="margin-bottom: 20px;">
+                    <input type="text" name="search" id="searchInput" placeholder="Cari nama, NPM, fakultas, atau jurusan..." value="<?= htmlspecialchars($search); ?>">
+                    <button type="submit">Cari</button>
+                </form>
                 <button id="tambahMahasiswa" onclick="openForm('tambahForm')">Tambah Mahasiswa</button>
-                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari nama..">
 
                 <table id="mahasiswaTable" class="table-mahasiswa">
                     <thead>
@@ -175,9 +250,10 @@ if (isset($_GET['hapus_user'])) {
                                 <td><?= $user['fakultas']; ?></td>
                                 <td><?= $user['jurusan']; ?></td>
                                 <td class="aksi">
-                                    <button class="btn-hapus" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?'); location.href='?hapus_user=<?= $user['id_users']; ?>';">Hapus</button>
-                                    <button class="btn-edit" onclick="editUser(<?= $user['id_users']; ?>, '<?= $user['nama']; ?>', '<?= $user['npm']; ?>', '<?= $user['fakultas']; ?>', '<?= $user['jurusan']; ?>')">Edit</button>
+                                    <button class="btn-edit" onclick="editUser(<?= $user['id_users']; ?>, '<?= addslashes($user['nama']); ?>', '<?= $user['npm']; ?>', '<?= $user['fakultas']; ?>', '<?= $user['jurusan']; ?>')">Edit</button>
+                                    <button class="btn-hapus" onclick="hapusUser(<?= $user['id_users']; ?>)">Hapus</button>
                                 </td>
+
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -284,6 +360,45 @@ if (isset($_GET['hapus_user'])) {
                         filterJurusan('editJurusanSelect');
                         document.getElementById('editJurusanSelect').value = jurusan;
                         openForm('editForm');
+                    }
+
+                    // Fungsi untuk menghapus pengguna dengan konfirmasi
+                    function hapusUser(id) {
+                        if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+                            // Redirect ke URL dengan parameter hapus_user
+                            window.location.href = '?hapus_user=' + id;
+                        }
+                    }
+
+                    function searchTable() {
+                        var input = document.getElementById('searchInput');
+                        var filter = input.value.toLowerCase();
+                        var table = document.getElementById('userTable');
+                        var rows = table.getElementsByTagName('tr');
+
+                        for (var i = 1; i < rows.length; i++) {
+                            var cells = rows[i].getElementsByTagName('td');
+                            var match = false;
+
+                            for (var j = 0; j < cells.length; j++) {
+                                if (cells[j]) {
+                                    var cellValue = cells[j].textContent || cells[j].innerText;
+                                    if (cellValue.toLowerCase().indexOf(filter) > -1) {
+                                        match = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            rows[i].style.display = match ? '' : 'none';
+                        }
+                    }
+
+                    // Fungsi untuk hapus pengguna dengan konfirmasi
+                    function hapusUser(id) {
+                        if (confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+                            window.location.href = '?hapus_user=' + id;
+                        }
                     }
                 </script>
             </div>

@@ -8,74 +8,91 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Maksimal ukuran file (5MB)
+$maxFileSize = 5 * 1024 * 1024;
+
 // Cek apakah form telah di-submit
 if (isset($_POST['submit'])) {
     // Direktori penyimpanan file
-    $targetDir = "uploads/";
+    $targetDir = __DIR__ . "/uploads/"; // Gunakan path absolut
 
-    // Ambil ekstensi file
-    $fileAkteExt = strtolower(pathinfo($_FILES["file_akte"]["name"], PATHINFO_EXTENSION));
-    $fileIjasaExt = strtolower(pathinfo($_FILES["file_ijasa"]["name"], PATHINFO_EXTENSION));
-    $filePembayaranExt = strtolower(pathinfo($_FILES["file_pembayaran"]["name"], PATHINFO_EXTENSION));
+    // Pastikan folder uploads ada
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true); // Buat folder jika belum ada
+    }
+
+    // Ambil informasi file
+    $fileAkte = $_FILES["file_akte"];
+    $fileIjasa = $_FILES["file_ijasa"];
+    $filePembayaran = $_FILES["file_pembayaran"];
+
+    // Validasi apakah file ada
+    if ($fileAkte['error'] != 0 || $fileIjasa['error'] != 0 || $filePembayaran['error'] != 0) {
+        echo "Gagal mengunggah, periksa file yang dipilih.";
+        exit();
+    }
 
     // Validasi jenis file akte (hanya PDF)
+    $fileAkteExt = strtolower(pathinfo($fileAkte["name"], PATHINFO_EXTENSION));
     if ($fileAkteExt !== 'pdf') {
         echo "File akte harus dalam format PDF.";
         exit();
     }
 
     // Validasi jenis file ijazah (hanya PDF)
+    $fileIjasaExt = strtolower(pathinfo($fileIjasa["name"], PATHINFO_EXTENSION));
     if ($fileIjasaExt !== 'pdf') {
         echo "File ijazah harus dalam format PDF.";
         exit();
     }
 
     // Validasi jenis file pembayaran (hanya PNG atau JPG)
+    $filePembayaranExt = strtolower(pathinfo($filePembayaran["name"], PATHINFO_EXTENSION));
     if (!in_array($filePembayaranExt, ['png', 'jpg', 'jpeg'])) {
         echo "File pembayaran harus dalam format PNG atau JPG.";
         exit();
     }
 
+    // Validasi ukuran file
+    if ($fileAkte['size'] > $maxFileSize || $fileIjasa['size'] > $maxFileSize || $filePembayaran['size'] > $maxFileSize) {
+        echo "Ukuran file tidak boleh lebih dari 5MB.";
+        exit();
+    }
+
     // Proses upload file akte
-    $fileAkteName = basename($_FILES["file_akte"]["name"]);
-    $targetFilePathAkte = $targetDir . uniqid() . "_" . $fileAkteName; // Buat nama unik untuk file
-    if (move_uploaded_file($_FILES["file_akte"]["tmp_name"], $targetFilePathAkte)) {
-        $fileAktePath = $targetFilePathAkte;
-    } else {
+    $fileAkteName = uniqid() . "_" . basename($fileAkte["name"]);
+    $targetFilePathAkte = $targetDir . $fileAkteName;
+    if (!move_uploaded_file($fileAkte["tmp_name"], $targetFilePathAkte)) {
         echo "Gagal mengunggah file akte.";
         exit();
     }
 
     // Proses upload file ijazah
-    $fileIjasaName = basename($_FILES["file_ijasa"]["name"]);
-    $targetFilePathIjasa = $targetDir . uniqid() . "_" . $fileIjasaName;
-    if (move_uploaded_file($_FILES["file_ijasa"]["tmp_name"], $targetFilePathIjasa)) {
-        $fileIjasaPath = $targetFilePathIjasa;
-    } else {
+    $fileIjasaName = uniqid() . "_" . basename($fileIjasa["name"]);
+    $targetFilePathIjasa = $targetDir . $fileIjasaName;
+    if (!move_uploaded_file($fileIjasa["tmp_name"], $targetFilePathIjasa)) {
         echo "Gagal mengunggah file ijazah.";
         exit();
     }
 
     // Proses upload file pembayaran
-    $filePembayaranName = basename($_FILES["file_pembayaran"]["name"]);
-    $targetFilePathPembayaran = $targetDir . uniqid() . "_" . $filePembayaranName;
-    if (move_uploaded_file($_FILES["file_pembayaran"]["tmp_name"], $targetFilePathPembayaran)) {
-        $filePembayaranPath = $targetFilePathPembayaran;
-    } else {
+    $filePembayaranName = uniqid() . "_" . basename($filePembayaran["name"]);
+    $targetFilePathPembayaran = $targetDir . $filePembayaranName;
+    if (!move_uploaded_file($filePembayaran["tmp_name"], $targetFilePathPembayaran)) {
         echo "Gagal mengunggah file pembayaran.";
         exit();
     }
 
     // Menyimpan path file ke database
     $userId = $_SESSION['user_id']; // ID pengguna yang login
-    $sql = "INSERT INTO dokumen (file_akte, file_ijasa, file_pembayaran, create_by) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO dokumen (file_akte, file_ijasa, file_pembayaran, create_by, status) VALUES (?, ?, ?, ?, 'pending')";
     $stmt = $koneksi->prepare($sql);
-    $stmt->bind_param("sssi", $fileAktePath, $fileIjasaPath, $filePembayaranPath, $userId);
+    $stmt->bind_param("sssi", $fileAkteName, $fileIjasaName, $filePembayaranName, $userId);
 
     if ($stmt->execute()) {
-        $_SESSION['upload_success'] = "Untuk proses selanjutnya silahkan tunggu dan cek di bagian kartu undangan.";
+        $_SESSION['upload_success'] = "Dokumen berhasil diunggah. Status saat ini: pending.";
     } else {
-        $_SESSION['upload_success'] = "Gagal menyimpan dokumen, silahkan coba lagi.";
+        $_SESSION['upload_error'] = "Gagal menyimpan dokumen, silahkan coba lagi.";
     }
 
     $stmt->close();
