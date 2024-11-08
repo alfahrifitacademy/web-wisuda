@@ -9,30 +9,32 @@ if (!isset($_SESSION['admin'])) {
 // Hubungkan ke database
 include '../admin/db_connnection.php';
 
-// Ambil data users dengan nama fakultas dan jurusan menggunakan JOIN
-$users = mysqli_query($koneksi, "SELECT u.id_users, u.nama, u.npm, f.fakultas, j.jurusan 
-                              FROM users u 
-                              JOIN fakultas f ON u.fakultas = f.id_fakultas 
-                              JOIN jurusan j ON u.jurusan = j.id_jurusan");
+// Ambil data users dengan nama fakultas dan jurusan menggunakan LEFT JOIN
+$users = mysqli_query($koneksi, "
+    SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
+    FROM users u
+    LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
+    LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
+");
 
 // Ambil data fakultas untuk dropdown
 $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
 
-// Ambil data jurusan untuk dropdown (akan difilter melalui JavaScript)
+// Ambil data jurusan untuk dropdown
 $jurusan_data = mysqli_query($koneksi, "SELECT * FROM jurusan");
 
 // Ambil data pencarian dari input pengguna
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Query untuk mendapatkan data mahasiswa dengan filter pencarian
-$sql = "SELECT u.id_users, u.nama, u.npm, f.fakultas, j.jurusan 
-        FROM users u 
-        JOIN fakultas f ON u.fakultas = f.id_fakultas 
-        JOIN jurusan j ON u.jurusan = j.id_jurusan 
-        WHERE u.nama LIKE '%$search%' 
-        OR u.npm LIKE '%$search%' 
-        OR f.fakultas LIKE '%$search%' 
-        OR j.jurusan LIKE '%$search%' 
+$sql = "SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
+        FROM users u
+        LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
+        LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
+        WHERE u.nama LIKE '%$search%'
+        OR u.npm LIKE '%$search%'
+        OR f.fakultas LIKE '%$search%'
+        OR j.jurusan LIKE '%$search%'
         ORDER BY u.id_users ASC";
 $users = mysqli_query($koneksi, $sql);
 
@@ -61,33 +63,14 @@ if (isset($_POST['update_user'])) {
     header('Location: data_mahasiswa.php');
 }
 
-// Hapus data pengguna
+// Hapus data pengguna dan data terkait
 if (isset($_GET['hapus_user'])) {
     $id_users = $_GET['hapus_user'];
 
-    // Query DELETE untuk menghapus data pengguna
-    $query = "DELETE FROM users WHERE id_users='$id_users'";
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Pengguna berhasil dihapus');</script>";
-    } else {
-        echo "<script>alert('Gagal menghapus pengguna');</script>";
-    }
-
-    // Refresh halaman setelah penghapusan
-    header('Location: data_mahasiswa.php');
-    exit;
-}
-
-// Hapus data terkait dan pengguna
-if (isset($_GET['hapus_user'])) {
-    $id_users = $_GET['hapus_user'];
-
-    // Hapus data terkait di tabel dokumen
+    // Hapus data terkait di tabel dokumen dan guest
     $query_dokumen = "DELETE FROM dokumen WHERE create_by='$id_users'";
-    mysqli_query($koneksi, $query_dokumen);
-
-    // Hapus data terkait di tabel guest
     $query_guest = "DELETE FROM guest WHERE create_by='$id_users'";
+    mysqli_query($koneksi, $query_dokumen);
     mysqli_query($koneksi, $query_guest);
 
     // Hapus data pengguna di tabel users
@@ -98,34 +81,11 @@ if (isset($_GET['hapus_user'])) {
         echo "<script>alert('Gagal menghapus pengguna');</script>";
     }
 
-    // Refresh halaman setelah penghapusan
     header('Location: data_mahasiswa.php');
     exit;
 }
-
-
-// Hapus data dokumen yang terkait dengan pengguna
-if (isset($_GET['hapus_user'])) {
-    $id_users = $_GET['hapus_user'];
-
-    // Hapus data terkait di tabel dokumen
-    $query_dokumen = "DELETE FROM dokumen WHERE create_by='$id_users'";
-    mysqli_query($koneksi, $query_dokumen);
-
-    // Hapus data pengguna di tabel users
-    $query_users = "DELETE FROM users WHERE id_users='$id_users'";
-    if (mysqli_query($koneksi, $query_users)) {
-        echo "<script>alert('Pengguna dan data terkait berhasil dihapus');</script>";
-    } else {
-        echo "<script>alert('Gagal menghapus pengguna');</script>";
-    }
-
-    // Refresh halaman setelah penghapusan
-    header('Location: data_mahasiswa.php');
-    exit;
-}
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

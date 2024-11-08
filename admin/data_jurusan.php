@@ -10,8 +10,13 @@ if (!isset($_SESSION['admin'])) {
 // Hubungkan ke database
 include '../admin/db_connnection.php';
 
-// Ambil data jurusan
-$jurusan_data = mysqli_query($koneksi, "SELECT j.id_jurusan, j.jurusan, f.fakultas FROM jurusan j JOIN fakultas f ON j.fakultas_id = f.id_fakultas");
+// Ambil data jurusan dengan LEFT JOIN agar tetap tampil meskipun fakultas_id NULL
+$jurusan_data = mysqli_query($koneksi, "
+    SELECT j.id_jurusan, j.jurusan, IFNULL(f.fakultas, 'Fakultas Tidak Ditemukan') AS fakultas
+    FROM jurusan j
+    LEFT JOIN fakultas f ON j.fakultas_id = f.id_fakultas
+    ORDER BY j.id_jurusan ASC
+");
 
 // Tambah data jurusan
 if (isset($_POST['tambah_jurusan'])) {
