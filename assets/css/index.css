@@ -1442,20 +1442,34 @@ input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-sea
 }
 
 .timeline-item {
-    margin: 15px 0;
+    margin-top: 15px;
     padding: 10px;
+    border-left: 3px solid #007bff;
+    padding-left: 15px;
 }
 
 .timeline-item h3 {
-    font-size: 30px;
+    margin: 0;
+    font-size: 18px;
     color: #333;
-    margin-bottom: 5px;
 }
 
 .timeline-item .date {
     font-size: 16px;
     font-weight: bold;
     color: #007bff;
+}
+
+.timeline-item .description {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.no-announcements {
+    font-style: italic;
+    color: #999;
+    margin-top: 15px;
 }
 
 
