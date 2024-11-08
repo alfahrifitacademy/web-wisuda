@@ -194,7 +194,7 @@ body {
 .containerTable {
   margin: 20px auto;
   padding: 20px;
-  max-width: 1000px; /* Batas lebar */
+  max-width: 1250px; /* Batas lebar */
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -243,77 +243,6 @@ body {
   text-align: center;
 }
 
-/* Tombol berkas dengan ikon */
-.btn-berkas {
-  padding: 8px 12px;
-  margin: 2px;
-  background-color: #ffc107; /* Warna kuning */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.btn-berkas:hover {
-  background-color: #e0a800; /* Kuning lebih gelap saat hover */
-}
-
-/* Ikon status */
-.text-pending {
-  color: #f0ad4e; /* Warna oranye untuk pending */
-  margin-right: 5px;
-}
-
-.text-approve {
-  color: #28a745; /* Warna hijau untuk approve */
-  margin-right: 5px;
-}
-
-/* Tombol Lihat File */
-.btn-view {
-  padding: 5px 10px;
-  margin: 2px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.btn-view:hover {
-  background-color: #218838;
-}
-
-/* Tombol Aksi */
-.table-wisuda .btn-edit,
-.table-wisuda .btn-hapus {
-  padding: 8px 12px;
-  margin: 2px;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  color: white;
-}
-
-.table-wisuda .btn-edit {
-  background-color: #007bff;
-}
-
-.table-wisuda .btn-edit:hover {
-  background-color: #0056b3;
-}
-
-.table-wisuda .btn-hapus {
-  background-color: #dc3545;
-}
-
-.table-wisuda .btn-hapus:hover {
-  background-color: #c82333;
-}
-
 /* Tombol Tambah Pengumuman */
 .containerTable button#tambahpengumuman {
   margin-bottom: 20px;
@@ -329,16 +258,136 @@ body {
   background-color: #0056b3;
 }
 
-/* Input pencarian */
-#searchInput {
-  width: 100%;
-  max-width: 300px;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+.container-detail {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.container-detail h2 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.container-detail h3 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+h3::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.detail-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.detail-info .column {
+  width: 45%;
+}
+
+.detail-info p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Gaya Umum untuk Status Badge */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Warna untuk Status */
+.status-approve {
+  background-color: #28a745; /* Hijau untuk Approve */
+}
+
+.status-reject {
+  background-color: #dc3545; /* Merah untuk Reject */
+}
+
+.status-pending {
+  background-color: #ffc107; /* Kuning untuk Pending */
+  color: #856404;
+}
+
+.btn-back {
+  display: inline-block;
+  padding: 8px 12px;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.btn-action {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.btn-approve {
+  background-color: #28a745;
+}
+
+.btn-reject {
+  background-color: #dc3545;
+}
+
+.btn-view {
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn-save {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-save:hover {
+  background-color: #218838;
+}
+
+.file-status {
+  color: #888;
+  font-style: italic;
+}
+
 
 /* Styling tabel pengumuman */
 .table-pengumuman {
@@ -358,23 +407,23 @@ body {
   padding: 10px;
   border: 1px solid #ddd;
   vertical-align: top; /* Selaras ke atas */
-  text-align: left;  /* Teks dalam sel berada di tengah */
+  text-align: left; /* Teks dalam sel berada di tengah */
 }
 
 .table-pengumuman tbody td.aksi {
   display: flex;
   flex-direction: column; /* Menempatkan tombol secara vertikal */
   justify-content: space-around; /* Menyebarkan tombol dengan jarak seimbang */
-  align-items: center;    /* Menyelaraskan tombol di tengah */
-  height: 100%;           /* Mengisi tinggi sel */
-  gap: 5px;               /* Jarak antar tombol */
+  align-items: center; /* Menyelaraskan tombol di tengah */
+  height: 100%; /* Mengisi tinggi sel */
+  gap: 5px; /* Jarak antar tombol */
 }
 
 /* Styling untuk isi pengumuman di tabel */
 .pengumuman-content {
-  white-space: pre-wrap;  /* Membungkus teks, termasuk karakter newline */
-  word-wrap: break-word;  /* Memastikan teks panjang terbungkus dengan baik */
-  max-width: 400px;       /* Batas lebar kolom (bisa disesuaikan) */
+  white-space: pre-wrap; /* Membungkus teks, termasuk karakter newline */
+  word-wrap: break-word; /* Memastikan teks panjang terbungkus dengan baik */
+  max-width: 400px; /* Batas lebar kolom (bisa disesuaikan) */
   overflow: hidden;
 }
 
@@ -448,14 +497,14 @@ body {
 .table-mahasiswa tbody td.aksi {
   display: flex;
   justify-content: center; /* Menempatkan tombol di tengah secara horizontal */
-  align-items: center;     /* Menempatkan tombol di tengah secara vertikal */
-  gap: 5px;                /* Jarak antar tombol */
+  align-items: center; /* Menempatkan tombol di tengah secara vertikal */
+  gap: 5px; /* Jarak antar tombol */
 }
 
 /* Tombol aksi di tabel mahasiswa */
 .table-mahasiswa .btn-edit,
 .table-mahasiswa .btn-hapus {
-  padding: 8px 12px;       /* Ukuran padding yang sama */
+  padding: 8px 12px; /* Ukuran padding yang sama */
   margin: 2px;
   border: none;
   border-radius: 5px;
@@ -497,7 +546,7 @@ body {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-width: 400px; /* Batas lebar modal */
-  width: 90%;       /* Responsif */
+  width: 90%; /* Responsif */
 }
 
 /* Header untuk form modal */
@@ -695,7 +744,8 @@ body {
 }
 
 /* Tombol aksi di tabel jurusan */
-.table-jurusan button, .table-jurusan a {
+.table-jurusan button,
+.table-jurusan a {
   padding: 8px 15px;
   margin: 2px;
   border: none;
@@ -773,8 +823,6 @@ body {
   color: var(--yellow);
 }
 
-
-
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
   .navigation {
@@ -798,25 +846,27 @@ body {
 
 @media screen and (max-width: 768px) {
   .containerTable {
-      padding: 10px;
+    padding: 10px;
   }
 
   #searchInput {
-      width: 100%;
-      margin-bottom: 10px;
+    width: 100%;
+    margin-bottom: 10px;
   }
 
-  #userTable thead th, #userTable tbody td {
-      padding: 10px;
+  #userTable thead th,
+  #userTable tbody td {
+    padding: 10px;
   }
 
-  #tambahForm, #editForm {
-      width: 90%;
+  #tambahForm,
+  #editForm {
+    width: 90%;
   }
 
   button {
-      padding: 8px 10px;
-      font-size: 14px;
+    padding: 8px 10px;
+    font-size: 14px;
   }
 }
 

@@ -10,6 +10,18 @@ if (!isset($_SESSION['admin'])) {
 // Hubungkan ke database
 include '../admin/db_connnection.php';
 
+// Query utama untuk mendapatkan data mahasiswa
+$users = mysqli_query($koneksi, "
+    SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, 
+           IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan, 
+           (SELECT status FROM dokumen WHERE create_by = u.id_users ORDER BY created_at DESC LIMIT 1) AS status, 
+           u.created_at
+    FROM users u
+    LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
+    LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
+    ORDER BY u.id_users ASC
+");
+
 // Ambil data dokumen dengan join ke tabel users
 $dokumen_data = mysqli_query($koneksi, "
     SELECT d.*, u.nama AS create_by_name 
@@ -18,52 +30,28 @@ $dokumen_data = mysqli_query($koneksi, "
     ORDER BY d.created_at DESC
 ");
 
-// Tambah data dokumen
-if (isset($_POST['tambah_dokumen'])) {
-    $file_akte = $_POST['file_akte'];
-    $file_ijasa = $_POST['file_ijasa'];
-    $file_pembayaran = $_POST['file_pembayaran'];
-    $created_by = $_POST['created_by'];
-    $created_at = date("Y-m-d H:i:s");
-
-    $query = "INSERT INTO dokumen (file_akte, file_ijasa, file_pembayaran, create_by, created_at, status) 
-              VALUES ('$file_akte', '$file_ijasa', '$file_pembayaran', '$created_by', '$created_at', 'pending')";
-    mysqli_query($koneksi, $query);
-    header('Location: data_wisuda.php');
+// Cek berkas (ambil data dokumen berdasarkan id_users)
+function getDokumenData($koneksi, $id_users)
+{
+    $result = mysqli_query($koneksi, "
+        SELECT id_dokumen, file_akte, file_ijazah, file_pembayaran, status, tanggal_wisuda, waktu_wisuda
+        FROM dokumen
+        WHERE create_by = '$id_users'
+    ");
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-// Update data dokumen
-if (isset($_POST['update_dokumen'])) {
-    $id_dok = $_POST['id_dok'];
-    $status = $_POST['status'];
-    $tgl_wisuda = $_POST['tgl_wisuda'];
-    $waktu = $_POST['waktu'];
+// Simpan perubahan status dokumen
+if (isset($_POST['simpan_status'])) {
+    $dokumen_ids = $_POST['dokumen_ids'];
+    $statuses = $_POST['statuses'];
 
-    // Query untuk memperbarui data dokumen
-    $query = "UPDATE dokumen SET status='$status', tgl_wisuda='$tgl_wisuda', waktu='$waktu' WHERE id_dok='$id_dok'";
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Data dokumen berhasil diperbarui');</script>";
-    } else {
-        echo "<script>alert('Gagal memperbarui data dokumen');</script>";
+    foreach ($dokumen_ids as $index => $id_dokumen) {
+        $status = $statuses[$index];
+        mysqli_query($koneksi, "UPDATE dokumen SET status='$status' WHERE id_dokumen='$id_dokumen'");
     }
-    header('Location: data_wisuda.php');
-    exit;
-}
-
-
-// Hapus data dokumen
-if (isset($_GET['hapus_dokumen'])) {
-    $id_dok = $_GET['hapus_dokumen'];
-
-    // Query DELETE untuk menghapus data dokumen
-    $query = "DELETE FROM dokumen WHERE id_dok='$id_dok'";
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Dokumen berhasil dihapus');</script>";
-    } else {
-        echo "<script>alert('Gagal menghapus dokumen');</script>";
-    }
-
-    header('Location: data_wisuda.php');
+    echo "<script>alert('Status berhasil disimpan');</script>";
+    header("Location: data_wisuda.php");
     exit;
 }
 
@@ -179,135 +167,65 @@ if (isset($_GET['hapus_dokumen'])) {
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>File Akte</th>
-                            <th>File Ijasah</th>
-                            <th>File Pembayaran</th>
+                            <th>NIM</th>
+                            <th>Fakultas</th>
+                            <th>Jurusan</th>
                             <th>Status</th>
-                            <th>Tanggal Wisuda</th>
-                            <th>Waktu Wisuda</th>
+                            <th>Dibuat</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $i = 1;
-                        while ($dokumen = mysqli_fetch_assoc($dokumen_data)) { ?>
+                        while ($user = mysqli_fetch_assoc($users)) {
+                            // Tentukan kelas CSS untuk status berdasarkan status saat ini
+                            $status_class = ($user['status'] == 'Approve') ? 'status-approve' : (($user['status'] == 'Reject') ? 'status-reject' : 'status-pending');
+                        ?>
                             <tr>
                                 <td><?= $i++; ?></td>
-                                <td><?= $dokumen['create_by_name']; ?></td>
-
-                                <!-- File Akte -->
+                                <td><?= $user['nama'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= $user['npm'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= $user['fakultas'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= $user['jurusan'] ?? 'Tidak tersedia'; ?></td>
                                 <td>
-                                    <a href="../uploads/<?= $dokumen['file_akte']; ?>" target="_blank">
-                                        <button class="btn-berkas">
-                                            <i class="fas fa-file-alt"></i> Akte
-                                        </button>
-                                    </a>
+                                    <span class="status-badge <?= $status_class ?>">
+                                        <?= $user['status'] ?? 'Data Kosong'; ?>
+                                    </span>
                                 </td>
-
-                                <!-- File Ijasah -->
-                                <td>
-                                    <a href="../uploads/<?= $dokumen['file_ijasa']; ?>" target="_blank">
-                                        <button class="btn-berkas">
-                                            <i class="fas fa-file-alt"></i> Ijasah
-                                        </button>
-                                    </a>
-                                </td>
-
-                                <!-- File Pembayaran -->
-                                <td>
-                                    <a href="../uploads/<?= $dokumen['file_pembayaran']; ?>" target="_blank">
-                                        <button class="btn-berkas">
-                                            <i class="fas fa-file-image"></i> Pembayaran
-                                        </button>
-                                    </a>
-                                </td>
-
-                                <!-- Status dengan ikon jam atau centang -->
-                                <td>
-                                    <?php if ($dokumen['status'] == 'pending') { ?>
-                                        <i class="fas fa-clock text-pending"></i> Pending
-                                    <?php } else { ?>
-                                        <i class="fas fa-check-circle text-approve"></i> Approve
-                                    <?php } ?>
-                                </td>
-
-                                <!-- Tanggal dan Waktu Wisuda -->
-                                <td><?= $dokumen['tgl_wisuda']; ?></td>
-                                <td><?= $dokumen['waktu']; ?></td>
-
-                                <!-- Aksi -->
-                                <!-- Aksi -->
-                                <td class="aksi">
-                                    <button class="btn-hapus" onclick="hapusDokumen(<?= $dokumen['id_dok']; ?>)">Hapus</button>
-                                    <button class="btn-edit" onclick="editDokumen(<?= $dokumen['id_dok']; ?>, '<?= $dokumen['status']; ?>', '<?= $dokumen['tgl_wisuda']; ?>', '<?= $dokumen['waktu']; ?>')">Edit</button>
-                                </td>
-
+                                <td><?= $user['created_at'] ?? 'Tidak tersedia'; ?></td>
+                                <td><a href="detail_dokumen.php?id_users=<?= $user['id_users']; ?>" class="btn-cek">Cek Berkas</a></td>
                             </tr>
                         <?php } ?>
                     </tbody>
+
                 </table>
-
-                <!-- Form Edit Dokumen -->
-                <div id="editForm" class="form-modal" style="display: none;">
-                    <button class="close-icon" onclick="closeForm('editForm')">&times;</button>
-                    <form method="POST">
-                        <h3>Edit Data Wisuda</h3>
-                        <input type="hidden" name="id_dok" id="editId">
-
-                        <!-- Dropdown Status -->
-                        <label for="status">Status:</label>
-                        <select name="status" id="editStatus" required>
-                            <option value="pending">Pending</option>
-                            <option value="approve">Approve</option>
-                        </select>
-
-                        <!-- Input Tanggal dan Waktu Wisuda -->
-                        <label for="tgl_wisuda">Tanggal Wisuda:</label>
-                        <input type="date" name="tgl_wisuda" id="editTglWisuda" required>
-
-                        <label for="waktu">Waktu Wisuda:</label>
-                        <input type="time" name="waktu" id="editWaktu" required>
-
-                        <button type="submit" name="update_dokumen">Update</button>
-                    </form>
-                </div>
-
-
-
-                <!-- Overlay -->
-                <div id="overlay" onclick="closeOverlay()" style="display:none;"></div>
-
-                <script>
-                    function openForm(formId) {
-                        document.getElementById(formId).style.display = 'block';
-                        document.getElementById('overlay').style.display = 'block';
-                    }
-
-                    function closeForm(formId) {
-                        document.getElementById(formId).style.display = 'none';
-                        document.getElementById('overlay').style.display = 'none';
-                    }
-
-                    function closeOverlay() {
-                        document.getElementById('editForm').style.display = 'none';
-                        document.getElementById('overlay').style.display = 'none';
-                    }
-
-                    function editDokumen(id, status, tgl_wisuda, waktu) {
-                        document.getElementById('editId').value = id;
-                        document.getElementById('editStatus').value = status;
-                        document.getElementById('editTglWisuda').value = tgl_wisuda;
-                        document.getElementById('editWaktu').value = waktu;
-                        openForm('editForm');
-                    }
-
-                    function hapusDokumen(id) {
-                        if (confirm('Apakah Anda yakin ingin menghapus dokumen ini?')) {
-                            window.location.href = '?hapus_dokumen=' + id;
-                        }
-                    }
-                </script>
             </div>
+
+            <script>
+                // Fungsi untuk update status langsung dari tombol
+                function updateStatus(id_users, status) {
+                    fetch('update_status.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id_users,
+                                status
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Status berhasil diperbarui');
+                                location.reload(); // Muat ulang halaman untuk memperbarui tampilan status
+                            } else {
+                                alert('Gagal memperbarui status');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            </script>
         </div>
     </div>
 
