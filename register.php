@@ -33,7 +33,7 @@ while ($rowJurusan = $resultJurusan->fetch_assoc()) {
 
     <form action="proses_register.php" method="POST">
         <input type="text" name="nama" placeholder="Nama" required>
-        <input type="text" name="npm" placeholder="NPM" required>
+        <input type="text" name="nim" placeholder="NIM" required>
 
         <!-- Dropdown Fakultas -->
         <select name="fakultas" id="fakultas" required>

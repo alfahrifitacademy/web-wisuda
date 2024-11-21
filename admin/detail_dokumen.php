@@ -48,7 +48,7 @@ if (isset($_POST['update_wisuda'])) {
 
 // Ambil data pengguna dan dokumen
 $user_query = mysqli_query($koneksi, "
-    SELECT u.nama, u.npm, f.fakultas, j.jurusan, u.created_at 
+    SELECT u.nama, u.nim, f.fakultas, j.jurusan, u.created_at 
     FROM users u
     LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
     LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
@@ -86,7 +86,7 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
         <div class="detail-info">
             <div class="column">
                 <p><strong>Nama:</strong> <?= $user['nama']; ?></p>
-                <p><strong>NIM:</strong> <?= $user['npm']; ?></p>
+                <p><strong>NIM:</strong> <?= $user['nim']; ?></p>
                 <p><strong>Fakultas:</strong> <?= $user['fakultas']; ?></p>
                 <p><strong>Jurusan:</strong> <?= $user['jurusan']; ?></p>
             </div>

@@ -12,7 +12,7 @@ include '../admin/db_connnection.php';
 
 // Query utama untuk mendapatkan data mahasiswa
 $users = mysqli_query($koneksi, "
-    SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, 
+    SELECT u.id_users, u.nama, u.nim, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, 
            IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan, 
            (SELECT status FROM dokumen WHERE create_by = u.id_users ORDER BY created_at DESC LIMIT 1) AS status, 
            u.created_at
@@ -184,7 +184,7 @@ if (isset($_POST['simpan_status'])) {
                             <tr>
                                 <td><?= $i++; ?></td>
                                 <td><?= $user['nama'] ?? 'Tidak tersedia'; ?></td>
-                                <td><?= $user['npm'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= $user['nim'] ?? 'Tidak tersedia'; ?></td>
                                 <td><?= $user['fakultas'] ?? 'Tidak tersedia'; ?></td>
                                 <td><?= $user['jurusan'] ?? 'Tidak tersedia'; ?></td>
                                 <td>

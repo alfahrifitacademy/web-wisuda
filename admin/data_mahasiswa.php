@@ -11,7 +11,7 @@ include '../admin/db_connnection.php';
 
 // Ambil data users dengan nama fakultas dan jurusan menggunakan LEFT JOIN
 $users = mysqli_query($koneksi, "
-    SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
+    SELECT u.id_users, u.nama, u.nim, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
     FROM users u
     LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
     LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
@@ -27,12 +27,12 @@ $jurusan_data = mysqli_query($koneksi, "SELECT * FROM jurusan");
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Query untuk mendapatkan data mahasiswa dengan filter pencarian
-$sql = "SELECT u.id_users, u.nama, u.npm, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
+$sql = "SELECT u.id_users, u.nama, u.nim, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan
         FROM users u
         LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
         LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
         WHERE u.nama LIKE '%$search%'
-        OR u.npm LIKE '%$search%'
+        OR u.nim LIKE '%$search%'
         OR f.fakultas LIKE '%$search%'
         OR j.jurusan LIKE '%$search%'
         ORDER BY u.id_users ASC";
@@ -41,11 +41,11 @@ $users = mysqli_query($koneksi, $sql);
 // Tambah data user
 if (isset($_POST['tambah_user'])) {
     $nama = $_POST['nama'];
-    $npm = $_POST['npm'];
+    $nim = $_POST['nim'];
     $fakultas = $_POST['fakultas'];
     $jurusan = $_POST['jurusan'];
 
-    $query = "INSERT INTO users (nama, npm, fakultas, jurusan) VALUES ('$nama', '$npm', '$fakultas', '$jurusan')";
+    $query = "INSERT INTO users (nama, nim, fakultas, jurusan) VALUES ('$nama', '$nim', '$fakultas', '$jurusan')";
     mysqli_query($koneksi, $query);
     header('Location: data_mahasiswa.php');
 }
@@ -54,11 +54,11 @@ if (isset($_POST['tambah_user'])) {
 if (isset($_POST['update_user'])) {
     $id_users = $_POST['id_users'];
     $nama = $_POST['nama'];
-    $npm = $_POST['npm'];
+    $nim = $_POST['nim'];
     $fakultas = $_POST['fakultas'];
     $jurusan = $_POST['jurusan'];
 
-    $query = "UPDATE users SET nama='$nama', npm='$npm', fakultas='$fakultas', jurusan='$jurusan' WHERE id_users='$id_users'";
+    $query = "UPDATE users SET nama='$nama', nim='$nim', fakultas='$fakultas', jurusan='$jurusan' WHERE id_users='$id_users'";
     mysqli_query($koneksi, $query);
     header('Location: data_mahasiswa.php');
 }
@@ -184,7 +184,7 @@ if (isset($_GET['hapus_user'])) {
                 <h2>Tabel Mahasiswa</h2>
                 <!-- Form Pencarian -->
                 <form method="GET" action="data_mahasiswa.php" style="margin-bottom: 20px;">
-                    <input type="text" name="search" id="searchInput" placeholder="Cari nama, NPM, fakultas, atau jurusan..." value="<?= htmlspecialchars($search); ?>">
+                    <input type="text" name="search" id="searchInput" placeholder="Cari nama, nim, fakultas, atau jurusan..." value="<?= htmlspecialchars($search); ?>">
                     <button type="submit">Cari</button>
                 </form>
                 <button id="tambahMahasiswa" onclick="openForm('tambahForm')">Tambah Mahasiswa</button>
@@ -194,7 +194,7 @@ if (isset($_GET['hapus_user'])) {
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>NPM</th>
+                            <th>NIM</th>
                             <th>Fakultas</th>
                             <th>Jurusan</th>
                             <th>Aksi</th>
@@ -206,11 +206,11 @@ if (isset($_GET['hapus_user'])) {
                             <tr>
                                 <td><?= $i++; ?></td>
                                 <td><?= $user['nama']; ?></td>
-                                <td><?= $user['npm']; ?></td>
+                                <td><?= $user['nim']; ?></td>
                                 <td><?= $user['fakultas']; ?></td>
                                 <td><?= $user['jurusan']; ?></td>
                                 <td class="aksi">
-                                    <button class="btn-edit" onclick="editUser(<?= $user['id_users']; ?>, '<?= addslashes($user['nama']); ?>', '<?= $user['npm']; ?>', '<?= $user['fakultas']; ?>', '<?= $user['jurusan']; ?>')">Edit</button>
+                                    <button class="btn-edit" onclick="editUser(<?= $user['id_users']; ?>, '<?= addslashes($user['nama']); ?>', '<?= $user['nim']; ?>', '<?= $user['fakultas']; ?>', '<?= $user['jurusan']; ?>')">Edit</button>
                                     <button class="btn-hapus" onclick="hapusUser(<?= $user['id_users']; ?>)">Hapus</button>
                                 </td>
 
@@ -224,7 +224,7 @@ if (isset($_GET['hapus_user'])) {
                     <form method="POST">
                         <h3>Tambah Mahasiswa</h3>
                         <input type="text" name="nama" placeholder="Nama" required>
-                        <input type="text" name="npm" placeholder="NPM" required>
+                        <input type="text" name="nim" placeholder="NIM" required>
 
                         <select name="fakultas" id="fakultasSelect" onchange="filterJurusan('jurusanSelect')" required>
                             <option value="">Pilih Fakultas</option>
@@ -251,7 +251,7 @@ if (isset($_GET['hapus_user'])) {
                         <h3>Edit Mahasiswa</h3>
                         <input type="hidden" name="id_users" id="editId">
                         <input type="text" name="nama" id="editNama" placeholder="Nama" required>
-                        <input type="text" name="npm" id="editNpm" placeholder="NPM" required>
+                        <input type="text" name="nim" id="editNIM" placeholder="NIM" required>
 
                         <select name="fakultas" id="editFakultasSelect" onchange="filterJurusan('editJurusanSelect')" required>
                             <option value="">Pilih Fakultas</option>
@@ -312,10 +312,10 @@ if (isset($_GET['hapus_user'])) {
                     }
 
                     // Edit user
-                    function editUser(id, nama, npm, fakultas, jurusan) {
+                    function editUser(id, nama, nim, fakultas, jurusan) {
                         document.getElementById('editId').value = id;
                         document.getElementById('editNama').value = nama;
-                        document.getElementById('editNpm').value = npm;
+                        document.getElementById('editNIM').value = nim;
                         document.getElementById('editFakultasSelect').value = fakultas;
                         filterJurusan('editJurusanSelect');
                         document.getElementById('editJurusanSelect').value = jurusan;

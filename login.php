@@ -6,13 +6,13 @@ include 'admin/db_connnection.php';
 
 // Cek apakah form login telah disubmit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $npm = $_POST['npm'];
+    $NIM = $_POST['NIM'];
     $password = $_POST['password'];
 
-    // Query untuk mendapatkan data pengguna berdasarkan NPM
-    $query = "SELECT * FROM users WHERE npm = ?";
+    // Query untuk mendapatkan data pengguna berdasarkan NIM
+    $query = "SELECT * FROM users WHERE NIM = ?";
     $stmt = $koneksi->prepare($query);
-    $stmt->bind_param("s", $npm);
+    $stmt->bind_param("s", $NIM);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $error = "Password salah!";
         }
     } else {
-        $error = "NPM tidak ditemukan!";
+        $error = "NIM tidak ditemukan!";
     }
 }
 ?>
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h2>Login</h2>
     <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
     <form action="login.php" method="POST">
-        <input type="text" name="npm" placeholder="NPM" required>
+        <input type="text" name="NIM" placeholder="NIM" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Login</button>
         <a href="register.php">Belum punya akun? Daftar</a>
