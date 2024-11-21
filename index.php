@@ -98,7 +98,7 @@ $result = mysqli_query($koneksi, $query);
                         untuk merayakan pencapaian dan semua kerja keras yang telah Anda lakukan!
                     </p>
                     <div class="hero_content-action d-flex flex-wrap">
-                        <a class="btn btn--gradient" href="login.html" data-aos="fade-left">
+                        <a class="btn btn--gradient" href="login.php" data-aos="fade-left">
                             <span class="text">Daftar Sekarang</span>
                         </a>
                     </div>
