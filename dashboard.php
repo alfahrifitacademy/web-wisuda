@@ -81,6 +81,32 @@ if (!isset($_SESSION['user_id'])) {
                     <img src="assets/img/customer01.png" alt="pp">
                 </div>
             </div>
+
+            <!-- ============ Main Dashboard Content =========== -->
+            <div class="dashboard-content">
+                <div class="welcome-section">
+                    <h1>Selamat Datang, <span class="highlight">User!</span></h1>
+                    <p>Ini adalah dashboard utama Anda, di mana Anda dapat mengakses semua fitur yang tersedia.</p>
+                </div>
+
+                <div class="features-section">
+                    <div class="feature-box">
+                        <h2>Daftar Wisuda</h2>
+                        <p>Cek status pendaftaran dan kelola informasi wisuda Anda.</p>
+                        <a href="daftar_wisuda.php" class="feature-link">Lihat Detail</a>
+                    </div>
+                    <div class="feature-box">
+                        <h2>Kartu Undangan</h2>
+                        <p>Unduh kartu undangan resmi untuk acara wisuda Anda.</p>
+                        <a href="kartu_undangan.php" class="feature-link">Lihat Detail</a>
+                    </div>
+                    <div class="feature-box">
+                        <h2>Profil</h2>
+                        <p>Perbarui informasi profil Anda dengan mudah.</p>
+                        <a href="profile.php" class="feature-link">Lihat Profil</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
