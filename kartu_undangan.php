@@ -81,7 +81,7 @@ $approvedInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $u
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
                 <div class="user">
-                    <img src="assets/img/customer01.png" alt="pp">
+                    <img href="profile.php" src="assets/img/customer01.png" alt="pp">
                 </div>
             </div>
 

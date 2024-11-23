@@ -81,7 +81,7 @@ $nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : "User";
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
                 <div class="user">
-                    <img src="assets/img/customer01.png" alt="pp">
+                    <img href="profile.php" src="assets/img/customer01.png" alt="pp">
                 </div>
             </div>
 
