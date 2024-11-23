@@ -6,6 +6,9 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit();
 }
+
+// Ambil nama user dari session
+$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : "User";
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +88,7 @@ if (!isset($_SESSION['user_id'])) {
             <!-- ============ Main Dashboard Content =========== -->
             <div class="dashboard-content">
                 <div class="welcome-section">
-                    <h1>Selamat Datang, <span class="highlight">User!</span></h1>
+                    <h1>Selamat Datang, <span class="highlight"><?php echo htmlspecialchars($nama_user); ?>!</span></h1>
                     <p>Ini adalah dashboard utama Anda, di mana Anda dapat mengakses semua fitur yang tersedia.</p>
                 </div>
 
