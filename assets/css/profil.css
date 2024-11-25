@@ -84,6 +84,60 @@ h2, p {
     text-align: left;
 }
 
+.profile-form label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.profile-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.profile-form input[type="text"],
+.profile-form select,
+.profile-form input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.profile-form button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.profile-form .edit-button {
+    background-color: #28a745; /* Warna hijau */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.profile-form .edit-button:hover {
+    background-color: #218838; /* Warna hijau lebih gelap */
+}
+
+.profile-form .cancel-button {
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.profile-form .cancel-button:hover {
+    background-color: #c82333; /* Warna merah lebih gelap */
+}
+
 .form-group {
     margin-bottom: 15px;
 }
