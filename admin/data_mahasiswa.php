@@ -254,7 +254,7 @@ if (isset($_GET['hapus_user'])) {
                         <input type="text" name="nim" id="editNIM" placeholder="NIM" required>
 
                         <select name="fakultas" id="editFakultasSelect" onchange="filterJurusan('editJurusanSelect')" required>
-                            <option value="">Pilih Fakultas</option>
+                            <option value="">-- Pilih Fakultas --</option>
                             <?php
                             mysqli_data_seek($fakultas_data, 0);
                             while ($fakultas = mysqli_fetch_assoc($fakultas_data)) { ?>
@@ -263,7 +263,7 @@ if (isset($_GET['hapus_user'])) {
                         </select>
 
                         <select name="jurusan" id="editJurusanSelect" required>
-                            <option value="">Pilih Jurusan</option>
+                            <option value="">-- Pilih Jurusan --</option>
                             <?php
                             mysqli_data_seek($jurusan_data, 0);
                             while ($jurusan = mysqli_fetch_assoc($jurusan_data)) { ?>

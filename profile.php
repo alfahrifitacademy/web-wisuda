@@ -126,18 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['action'])) {
         if (!in_array($file_info['mime'], $allowed_types)) {
             die("Format file tidak valid. Hanya JPEG dan PNG yang diizinkan.");
         }
-
-        // Resize gambar jika dimensinya lebih besar dari 1200x1800 piksel
-        if ($width > 1200 || $height > 1800) {
-            $optimized_image = optimizeImage($file_tmp, 1200, 1800);
-            $foto_profile = file_get_contents($optimized_image); // Baca file hasil optimasi
-            unlink($optimized_image); // Hapus file sementara
-        } else {
-            // Jika dimensinya sudah sesuai, langsung baca file sebagai binary
-            $foto_profile = file_get_contents($file_tmp);
-        }
     }
-
 
     // Update data di database
     $query = "UPDATE users SET nama = ?, fakultas = ?, jurusan = ? WHERE id_users = ?";
@@ -173,8 +162,6 @@ if (isset($_GET['fakultas_id'])) {
     echo json_encode($jurusan);
     exit();
 }
-
-
 
 // Jika ada request POST untuk menyimpan foto saja
 if (isset($_POST['action']) && $_POST['action'] === 'save_photo') {
@@ -270,6 +257,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <p><strong>Fakultas:</strong> <?php echo htmlspecialchars($nama_fakultas); ?></p>
                 <p><strong>Jurusan:</strong> <?php echo htmlspecialchars($nama_jurusan); ?></p>
                 <button id="edit-button" class="edit-button" onclick="switchToEdit()">Edit</button>
+                <!-- Back button to go back to dashboard.php -->
+                <a href="dashboard.php">
+                    <button class="back-button">Kembali</button>
+                </a>
             </div>
 
             <form id="edit-mode" method="POST" enctype="multipart/form-data" class="profile-form" style="display: none;">
@@ -288,10 +279,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="fakultas">Fakultas</label>
                     <select name="fakultas" id="fakultas" required onchange="fetchJurusan()">
                         <option value="">-- Pilih Fakultas --</option>
-                        <?php while ($row = $fakultas_result->fetch_assoc()) : ?>
+                        <?php
+                        // Menampilkan fakultas yang ada di database
+                        while ($row = $fakultas_result->fetch_assoc()) : ?>
                             <option value="<?php echo htmlspecialchars($row['id_fakultas']); ?>"
                                 <?php echo ($row['id_fakultas'] == $user['fakultas']) ? 'selected' : ''; ?>>
-                                <?php echo ($fakultas_row['fakultas']); ?>
+                                <?php echo htmlspecialchars($row['fakultas']); ?>
                             </option>
                         <?php endwhile; ?>
                     </select>
@@ -301,17 +294,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label for="jurusan">Jurusan</label>
                     <select name="jurusan" id="jurusan" required>
                         <option value="">-- Pilih Jurusan --</option>
-                        <?php if (!empty($jurusan_result)) : ?>
-                            <?php while ($jurusan_row = $jurusan_result->fetch_assoc()) : ?>
+                        <?php
+                        // Menampilkan jurusan yang sesuai dengan fakultas yang sudah dipilih
+                        if (!empty($jurusan_result)) :
+                            while ($jurusan_row = $jurusan_result->fetch_assoc()) : ?>
                                 <option value="<?php echo htmlspecialchars($jurusan_row['id_jurusan']); ?>"
                                     <?php echo ($jurusan_row['id_jurusan'] == $user['jurusan']) ? 'selected' : ''; ?>>
-                                    <?php echo ($jurusan_row['jurusan']); ?>
+                                    <?php echo htmlspecialchars($jurusan_row['jurusan']); ?>
                                 </option>
-                            <?php endwhile; ?>
-                        <?php endif; ?>
+                        <?php endwhile;
+                        endif; ?>
                     </select>
                 </div>
-
 
                 <button type="button" class="cancel-button" onclick="switchToView()">Batal</button>
                 <button type="submit" class="edit-button">Simpan Perubahan</button>
@@ -395,62 +389,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 function fetchJurusan() {
                     const fakultasId = document.getElementById('fakultas').value;
                     const jurusanDropdown = document.getElementById('jurusan');
+
+                    // Kosongkan dropdown jurusan
                     jurusanDropdown.innerHTML = '<option value="">-- Pilih Jurusan --</option>';
 
-                    if (fakultasId) {
-                        fetch(`profile.php?fakultas_id=${fakultasId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                data.forEach(jurusan => {
-                                    const option = document.createElement('option');
-                                    option.value = jurusan.id_jurusan;
-                                    option.textContent = jurusan.jurusan;
-                                    jurusanDropdown.appendChild(option);
-                                });
-                            })
-                            .catch(error => console.error('Error:', error));
-                    }
+                    // Fetch jurusan data via AJAX based on selected fakultas
+                    fetch('profile.php?fakultas_id=' + fakultasId)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(jurusan => {
+                                const option = document.createElement('option');
+                                option.value = jurusan.id_jurusan;
+                                option.textContent = jurusan.jurusan;
+                                jurusanDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching jurusan:', error);
+                        });
                 }
 
-                function optimizeImage($file, $max_width, $max_height) {
-                    $image_info = getimagesize($file);
-                    $width = $image_info[0];
-                    $height = $image_info[1];
-                    $mime = $image_info['mime'];
-
-                    // Hitung rasio resize
-                    $ratio = min($max_width / $width, $max_height / $height);
-                    $new_width = $width * $ratio;
-                    $new_height = $height * $ratio;
-
-                    // Buat image dari file asli
-                    switch ($mime) {
-                        case 'image/jpeg':
-                            $src_image = imagecreatefromjpeg($file);
-                            break;
-                        case 'image/png':
-                            $src_image = imagecreatefrompng($file);
-                            break;
-                        default:
-                            die("Format gambar tidak didukung.");
-                    }
-
-                    // Buat canvas untuk gambar baru
-                    $dst_image = imagecreatetruecolor($new_width, $new_height);
-
-                    // Resize gambar
-                    imagecopyresampled($dst_image, $src_image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-                    // Simpan gambar yang dioptimasi
-                    $output_file = tempnam(sys_get_temp_dir(), 'optimized_image'); // File sementara
-                    imagejpeg($dst_image, $output_file, 85); // Kompresi 85% untuk kualitas tinggi
-
-                    // Hapus gambar sementara dari memori
-                    imagedestroy($src_image);
-                    imagedestroy($dst_image);
-
-                    return $output_file;
-                }
 
                 function deleteFoto() {
                     document.getElementById('modal-profile-preview').src = 'assets/img/default-profile.svg';
