@@ -13,16 +13,37 @@ include '../admin/db_connnection.php';
 // Fungsi untuk update status jika form disubmit
 if (isset($_POST['update_status'])) {
     $id_users = $_POST['id_users'];
-    $status = $_POST['status'];
+
+    // Pastikan status diambil dari POST jika ada
+    if (isset($_POST['status']) && in_array($_POST['status'], ['pending', 'approved', 'rejected'])) {
+        $status = $_POST['status'];
+    }
+
+    // Jika status diubah menjadi 'rejected', ambil alasan penolakan dari form
+    if ($status == 'rejected' && isset($_POST['reason_reject']) && !empty($_POST['reason_reject'])) {
+        $reason_reject = $_POST['reason_reject']; // Ambil alasan penolakan dari form
+    }
+
+    // Siapkan query untuk memperbarui status
+    $query = "UPDATE dokumen SET status='$status'";
+
+    // Jika alasan penolakan ada, update juga kolom reason_reject
+    if ($reason_reject) {
+        $query .= ", reason_reject='$reason_reject'";
+    }
 
     // Update status di tabel dokumen
-    $query = "UPDATE dokumen SET status='$status' WHERE create_by='$id_users'";
+    $query .= " WHERE create_by='$id_users'";
+
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Status berhasil diperbarui');</script>";
+        header("Location: detail_dokumen.php?id_users=$id_users"); // Setelah update, refresh halaman
+        exit;
     } else {
         echo "<script>alert('Gagal memperbarui status');</script>";
     }
 }
+
 
 // Ambil id_users dari URL
 $id_users = isset($_GET['id_users']) ? $_GET['id_users'] : null;
@@ -57,11 +78,77 @@ $user_query = mysqli_query($koneksi, "
 $user = mysqli_fetch_assoc($user_query);
 
 $dokumen_query = mysqli_query($koneksi, "
-    SELECT file_akte, file_ijasa, file_pembayaran, status, tgl_wisuda, waktu 
+    SELECT file_akte, file_ijasa, file_pembayaran, status, tgl_wisuda, waktu, reason_reject 
     FROM dokumen 
     WHERE create_by = '$id_users'
 ");
 $dokumen = mysqli_fetch_assoc($dokumen_query);
+
+// Ambil status dari POST (jika ada) atau dari data dokumen
+$status = isset($_POST['status']) ? $_POST['status'] : 'pending'; // Default ke 'pending'
+
+// Ambil data pengguna dan dokumen
+$user_query = mysqli_query($koneksi, "
+    SELECT u.nama, u.nim, f.fakultas, j.jurusan, u.created_at 
+    FROM users u
+    LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
+    LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
+    WHERE u.id_users = '$id_users'
+");
+$user = mysqli_fetch_assoc($user_query);
+
+$dokumen_query = mysqli_query($koneksi, "
+    SELECT file_akte, file_ijasa, file_pembayaran, status, tgl_wisuda, waktu, reason_reject 
+    FROM dokumen 
+    WHERE create_by = '$id_users'
+");
+$dokumen = mysqli_fetch_assoc($dokumen_query);
+
+// Variabel status dan alasan penolakan
+$status = isset($dokumen['status']) ? $dokumen['status'] : 'pending'; // Default status adalah 'pending'
+$reason_reject = isset($dokumen['reason_reject']) ? $dokumen['reason_reject'] : null;
+
+// Proses ketika status diubah
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Ambil status dari form
+    $status = $_POST['status'];
+    $id_users = $_POST['id_users'];
+
+    // Validasi status
+    if (!in_array($status, ['pending', 'approved', 'rejected'])) {
+        echo "<script>alert('Status tidak valid');</script>";
+        exit;
+    }
+
+    // Jika status diubah menjadi 'rejected', pastikan ada alasan penolakan
+    if ($status == 'rejected') {
+        if (isset($_POST['reason_reject']) && !empty($_POST['reason_reject'])) {
+            $reason_reject = mysqli_real_escape_string($koneksi, $_POST['reason_reject']); // Escape input alasan
+        } else {
+            echo "<script>alert('Alasan penolakan harus diisi!');</script>";
+            exit;
+        }
+    } else {
+        // Jika status bukan 'rejected', tidak perlu alasan penolakan
+        $reason_reject = null;
+    }
+
+    // Siapkan query untuk memperbarui status dan alasan penolakan jika ada
+    $query = "UPDATE dokumen SET status='$status'";
+    if ($status == 'rejected' && !empty($reason_reject)) {
+        $query .= ", reason_reject='$reason_reject'"; // Menambahkan alasan penolakan jika ada
+    }
+    $query .= " WHERE create_by='$id_users'";
+
+    // Eksekusi query
+    if (mysqli_query($koneksi, $query)) {
+        echo "<script>alert('Status berhasil diperbarui');</script>";
+        header("Location: detail_dokumen.php?id_users=$id_users"); // Refresh halaman setelah update
+        exit;
+    } else {
+        echo "<script>alert('Gagal memperbarui status');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -81,21 +168,23 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
     <div class="container-detail">
         <a href="data_wisuda.php" class="btn-back">← Kembali</a>
         <h2>Detail Dokumen Mahasiswa</h2>
-
         <!-- Informasi Mahasiswa -->
         <div class="detail-info">
             <div class="column">
-                <p><strong>Nama:</strong> <?= $user['nama']; ?></p>
-                <p><strong>NIM:</strong> <?= $user['nim']; ?></p>
-                <p><strong>Fakultas:</strong> <?= $user['fakultas']; ?></p>
-                <p><strong>Jurusan:</strong> <?= $user['jurusan']; ?></p>
+                <p><strong>Nama:</strong> <?= htmlspecialchars($user['nama']); ?></p>
+                <p><strong>NIM:</strong> <?= htmlspecialchars($user['nim']); ?></p>
+                <p><strong>Fakultas:</strong> <?= htmlspecialchars($user['fakultas']); ?></p>
+                <p><strong>Jurusan:</strong> <?= htmlspecialchars($user['jurusan']); ?></p>
             </div>
             <div class="column">
                 <p><strong>Status:</strong>
-                    <span class="status-badge <?= ($dokumen['status'] == 'Approve') ? 'status-approve' : (($dokumen['status'] == 'Reject') ? 'status-reject' : 'status-pending'); ?>">
-                        <?= $dokumen['status'] ?? 'Pending'; ?>
+                    <span class="status-badge <?= ($dokumen['status'] == 'approved') ? 'status-approve' : (($dokumen['status'] == 'rejected') ? 'status-reject' : 'status-pending'); ?>">
+                        <?= htmlspecialchars($dokumen['status']) ?? 'pending'; ?>
                     </span>
                 </p>
+                <?php if ($dokumen['status'] == 'rejected' && !empty($dokumen['reason_reject'])): ?>
+                    <p><strong>Alasan Penolakan:</strong> <?= htmlspecialchars($dokumen['reason_reject']); ?></p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -105,40 +194,39 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
             <div class="column">
                 <p><strong>File Akte:</strong>
                     <?php if (!empty($dokumen['file_akte'])): ?>
-                        <a href="../uploads/<?= $dokumen['file_akte'] ?>" target="_blank" class="btn-view">Lihat</a>
+                        <a href="../uploads/<?= htmlspecialchars($dokumen['file_akte']); ?>" target="_blank" class="btn-view">Lihat</a>
                     <?php else: ?>
                         <span class="file-status">Tidak tersedia</span>
                     <?php endif; ?>
                 </p>
                 <p><strong>File Ijazah:</strong>
                     <?php if (!empty($dokumen['file_ijasa'])): ?>
-                        <a href="../uploads/<?= $dokumen['file_ijasa'] ?>" target="_blank" class="btn-view">Lihat</a>
+                        <a href="../uploads/<?= htmlspecialchars($dokumen['file_ijasa']); ?>" target="_blank" class="btn-view">Lihat</a>
                     <?php else: ?>
                         <span class="file-status">Tidak tersedia</span>
                     <?php endif; ?>
                 </p>
                 <p><strong>File Pembayaran:</strong>
                     <?php if (!empty($dokumen['file_pembayaran'])): ?>
-                        <a href="../uploads/<?= $dokumen['file_pembayaran'] ?>" target="_blank" class="btn-view">Lihat</a>
+                        <a href="../uploads/<?= htmlspecialchars($dokumen['file_pembayaran']); ?>" target="_blank" class="btn-view">Lihat</a>
                     <?php else: ?>
                         <span class="file-status">Tidak tersedia</span>
                     <?php endif; ?>
                 </p>
             </div>
             <div class="column">
-        <p><strong>Tanggal Wisuda:</strong> 
-            <span class="<?= !empty($dokumen['tgl_wisuda']) ? '' : 'file-status'; ?>">
-                <?= !empty($dokumen['tgl_wisuda']) ? $dokumen['tgl_wisuda'] : 'Tidak tersedia'; ?>
-            </span>
-        </p>
-        <p><strong>Waktu Wisuda:</strong> 
-            <span class="<?= !empty($dokumen['waktu']) ? '' : 'file-status'; ?>">
-                <?= !empty($dokumen['waktu']) ? $dokumen['waktu'] : 'Tidak tersedia'; ?>
-            </span>
-        </p>
-    </div>
+                <p><strong>Tanggal Wisuda:</strong>
+                    <span class="<?= !empty($dokumen['tgl_wisuda']) ? '' : 'file-status'; ?>">
+                        <?= !empty($dokumen['tgl_wisuda']) ? htmlspecialchars($dokumen['tgl_wisuda']) : 'Tidak tersedia'; ?>
+                    </span>
+                </p>
+                <p><strong>Waktu Wisuda:</strong>
+                    <span class="<?= !empty($dokumen['waktu']) ? '' : 'file-status'; ?>">
+                        <?= !empty($dokumen['waktu']) ? htmlspecialchars($dokumen['waktu']) : 'Tidak tersedia'; ?>
+                    </span>
+                </p>
+            </div>
         </div>
-
 
         <!-- Form Edit Tanggal dan Waktu Wisuda -->
         <h3>Edit Tanggal dan Waktu Wisuda</h3>
@@ -146,23 +234,38 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
             <div class="detail-info">
                 <div class="column">
                     <label for="tgl_wisuda"><strong>Tanggal Wisuda:</strong></label>
-                    <input type="date" id="tgl_wisuda" name="tgl_wisuda" value="<?= $dokumen['tgl_wisuda']; ?>" required>
+                    <input type="date" id="tgl_wisuda" name="tgl_wisuda" value="<?= htmlspecialchars($dokumen['tgl_wisuda']); ?>" required>
                 </div>
                 <div class="column">
                     <label for="waktu"><strong>Waktu Wisuda:</strong></label>
-                    <input type="time" id="waktu" name="waktu" value="<?= $dokumen['waktu']; ?>" required>
+                    <input type="time" id="waktu" name="waktu" value="<?= htmlspecialchars($dokumen['waktu']); ?>" required>
                 </div>
             </div>
             <button type="submit" name="update_wisuda" class="btn-save">Simpan</button>
         </form>
 
-        <!-- Tindakan -->
-        <div style="text-align: center; margin-top: 20px;">
-            <form method="POST" style="display: inline;">
+        <!-- Form untuk Mengubah Status -->
+        <form method="POST">
+            <input type="hidden" name="id_users" value="<?= $id_users; ?>">
+
+            <!-- Tombol Terima (Approved) -->
+            <button type="submit" name="status" value="approved" class="btn-action btn-approve">✔ Terima</button>
+
+            <!-- Tombol Tolak (Rejected) -->
+            <button type="button" class="btn-action btn-reject" onclick="openModal()">✖ Tolak</button>
+        </form>
+    </div>
+    
+    <!-- Modal untuk alasan penolakan -->
+    <div id="reasonModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Masukkan Alasan Penolakan</h2>
+            <form method="POST">
                 <input type="hidden" name="id_users" value="<?= $id_users; ?>">
-                <button type="submit" name="status" value="Approve" class="btn-action btn-approve">✔ Terima</button>
-                <button type="submit" name="status" value="Reject" class="btn-action btn-reject">✖ Tolak</button>
-                <input type="hidden" name="update_status" value="true">
+                <input type="hidden" name="status" value="rejected">
+                <textarea name="reason_reject" id="reason_reject" rows="4" placeholder="Masukkan alasan penolakan" required></textarea><br><br>
+                <button type="submit" class="btn-save">Simpan Alasan</button>
             </form>
         </div>
     </div>
@@ -185,7 +288,7 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
                 return;
             }
 
-            document.getElementById('filePreview').src = '../path/to/files/' + filePath;
+            document.getElementById('filePreview').src = '../uploads/' + filePath;
             document.getElementById('filePreviewModal').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         }
@@ -194,6 +297,24 @@ $dokumen = mysqli_fetch_assoc($dokumen_query);
             document.getElementById('filePreviewModal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('filePreview').src = "";
+        }
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            document.getElementById("reasonModal").style.display = "block";
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            document.getElementById("reasonModal").style.display = "none";
+        }
+
+        // Menutup modal jika pengguna mengklik di luar modal
+        window.onclick = function(event) {
+            var modal = document.getElementById("reasonModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>

@@ -13,6 +13,10 @@ $user_id = $_SESSION['user_id'];
 // Ambil data undangan yang sudah disetujui
 $approvedInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $user_id AND status = 'Approved'");
 
+$sql = "SELECT users.id_users, users.nama, users.nim, users.created_at, dokumen.status 
+        FROM users
+        JOIN dokumen ON users.id_users = dokumen.create_by";
+
 ?>
 
 <!DOCTYPE html>
@@ -85,71 +89,75 @@ $approvedInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $u
                 </div>
             </div>
 
-            <div class="content-container">
-                <h2>Kartu Undangan</h2>
+            <h2>Kartu Undangan</h2>
+            <div class="table-container">
+                <table border="1">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>NIM</th>
+                        <th>Dibuat</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    <?php
+                    // Query untuk menampilkan pengguna yang dokumennya disetujui
+                    $query = "SELECT users.id_users, users.nama, users.nim 
+              FROM users
+              JOIN dokumen ON users.id_users = dokumen.create_by
+              WHERE dokumen.status = 'approved'";
+                    $result = $koneksi->query($query);
+                    $no = 1;
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $no++ . "</td>";
+                        echo "<td>" . $row['nama'] . "</td>";
+                        echo "<td>" . $row['nim'] . "</td>";
+                        echo "<td><a href='download.php?id_users=" . $row['id_users'] . "'>Download Surat</a></td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </table>
+            </div>
 
-                <!-- Tabel untuk undangan yang sudah disetujui -->
-                <div class="table-container">
-                    <table border="1">
-                        <tr>
-                            <th>No</th>
-                            <th>Kepada</th>
-                            <th>Dibuat</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                        <?php
-                        $no = 1;
-                        while ($row = $approvedInvitations->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>" . $no++ . "</td>";
-                            echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                            echo "<td><a href='download.php?id_guest=" . $row['id_guest'] . "'>Download</a></td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </table>
-                </div>
 
-                <!-- Tabel untuk mengelola undangan baru -->
-                <h2>Daftar Undangan</h2>
-                <p><a href="guest_crud.php?action=create">+ Tambah Undangan</a></p>
 
-                <div class="table-container">
-                    <table border="1">
-                        <tr>
-                            <th>No</th>
-                            <th>Kepada</th>
-                            <th>Dibuat</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                        <?php
-                        // Ambil data undangan dari database
-                        $allInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $user_id");
-                        $no = 1;
-                        while ($row = $allInvitations->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>" . $no++ . "</td>";
-                            echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                            echo "<td>
+            <!-- Tabel untuk mengelola undangan baru -->
+            <h2>Daftar Undangan</h2>
+            <p><a href="guest_crud.php?action=create">+ Tambah Undangan</a></p>
+            <div class="table-container">
+                <table border="1">
+                    <tr>
+                        <th>No</th>
+                        <th>Kepada</th>
+                        <th>Dibuat</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    <?php
+                    // Ambil data undangan dari database
+                    $allInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $user_id");
+                    $no = 1;
+                    while ($row = $allInvitations->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $no++ . "</td>";
+                        echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+                        echo "<td>
                                 <a href='guest_crud.php?action=update&id_guest=" . $row['id_guest'] . "'>Edit</a> |
                                 <a href='guest_crud.php?action=delete&id_guest=" . $row['id_guest'] . "'>Hapus</a>";
-                            if ($row['status'] == 'Pending') {
-                                echo " | <a href='guest_crud.php?action=approve&id_guest=" . $row['id_guest'] . "'>Setujui</a>";
-                            }
-                            echo "</td>";
-                            echo "</tr>";
+                        if ($row['status'] == 'Pending') {
+                            echo " | <a href='guest_crud.php?action=approve&id_guest=" . $row['id_guest'] . "'>Setujui</a>";
                         }
-                        ?>
-                    </table>
-                </div>
+                        echo "</td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </table>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- =========== Scripts =========  -->
@@ -160,6 +168,7 @@ $approvedInvitations = $koneksi->query("SELECT * FROM guest WHERE create_by = $u
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>
 
 <?php $koneksi->close(); ?>

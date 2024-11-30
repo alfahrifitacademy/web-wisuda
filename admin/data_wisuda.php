@@ -12,7 +12,8 @@ include '../admin/db_connnection.php';
 
 // Query utama untuk mendapatkan data mahasiswa
 $users = mysqli_query($koneksi, "
-    SELECT u.id_users, u.nama, u.nim, IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, 
+    SELECT u.id_users, u.nama, u.nim, 
+           IFNULL(f.fakultas, 'Tidak Tersedia') AS fakultas, 
            IFNULL(j.jurusan, 'Tidak Tersedia') AS jurusan, 
            (SELECT status FROM dokumen WHERE create_by = u.id_users ORDER BY created_at DESC LIMIT 1) AS status, 
            u.created_at
@@ -22,7 +23,7 @@ $users = mysqli_query($koneksi, "
     ORDER BY u.id_users ASC
 ");
 
-// Ambil data dokumen dengan join ke tabel users
+// Query untuk mengambil data dokumen dengan join ke tabel users
 $dokumen_data = mysqli_query($koneksi, "
     SELECT d.*, u.nama AS create_by_name 
     FROM dokumen d 
@@ -55,6 +56,13 @@ if (isset($_POST['simpan_status'])) {
     exit;
 }
 
+// Ambil data pengguna yang berstatus 'approved', 'rejected', atau 'pending'
+$users_query = "SELECT u.id_users, u.nama, u.nim, f.fakultas, j.jurusan, u.created_at, d.status 
+                FROM users u
+                LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
+                LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
+                LEFT JOIN dokumen d ON u.id_users = d.create_by";
+$users = mysqli_query($koneksi, $users_query);
 ?>
 
 <!DOCTYPE html>
@@ -176,28 +184,39 @@ if (isset($_POST['simpan_status'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $i = 1;
-                        while ($user = mysqli_fetch_assoc($users)) {
+                        <?php $i = 1; ?>
+                        <?php while ($user = mysqli_fetch_assoc($users)) {
                             // Tentukan kelas CSS untuk status berdasarkan status saat ini
-                            $status_class = ($user['status'] == 'Approve') ? 'status-approve' : (($user['status'] == 'Reject') ? 'status-reject' : 'status-pending');
+                            $status_class = '';
+                            switch ($user['status']) {
+                                case 'approved':
+                                    $status_class = 'status-approve'; // CSS untuk status approve
+                                    break;
+                                case 'rejected':
+                                    $status_class = 'status-reject'; // CSS untuk status reject
+                                    break;
+                                case 'pending':
+                                default:
+                                    $status_class = 'status-pending'; // CSS untuk status pending
+                                    break;
+                            }
                         ?>
                             <tr>
                                 <td><?= $i++; ?></td>
-                                <td><?= $user['nama'] ?? 'Tidak tersedia'; ?></td>
-                                <td><?= $user['nim'] ?? 'Tidak tersedia'; ?></td>
-                                <td><?= $user['fakultas'] ?? 'Tidak tersedia'; ?></td>
-                                <td><?= $user['jurusan'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= htmlspecialchars($user['nama'] ?? 'Tidak tersedia'); ?></td>
+                                <td><?= htmlspecialchars($user['nim'] ?? 'Tidak tersedia'); ?></td>
+                                <td><?= htmlspecialchars($user['fakultas'] ?? 'Tidak tersedia'); ?></td>
+                                <td><?= htmlspecialchars($user['jurusan'] ?? 'Tidak tersedia'); ?></td>
                                 <td>
                                     <span class="status-badge <?= $status_class ?>">
-                                        <?= $user['status'] ?? 'Data Kosong'; ?>
+                                        <?= htmlspecialchars($user['status'] ?? 'Data Kosong'); ?>
                                     </span>
                                 </td>
-                                <td><?= $user['created_at'] ?? 'Tidak tersedia'; ?></td>
+                                <td><?= htmlspecialchars($user['created_at'] ?? 'Tidak tersedia'); ?></td>
                                 <td><a href="detail_dokumen.php?id_users=<?= $user['id_users']; ?>" class="btn-cek">Cek Berkas</a></td>
                             </tr>
                         <?php } ?>
                     </tbody>
-
                 </table>
             </div>
 
