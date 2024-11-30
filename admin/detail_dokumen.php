@@ -10,43 +10,8 @@ if (!isset($_SESSION['admin'])) {
 // Hubungkan ke database
 include '../admin/db_connnection.php';
 
-// Fungsi untuk update status jika form disubmit
-if (isset($_POST['update_status'])) {
-    $id_users = $_POST['id_users'];
-
-    // Pastikan status diambil dari POST jika ada
-    if (isset($_POST['status']) && in_array($_POST['status'], ['pending', 'approved', 'rejected'])) {
-        $status = $_POST['status'];
-    }
-
-    // Jika status diubah menjadi 'rejected', ambil alasan penolakan dari form
-    if ($status == 'rejected' && isset($_POST['reason_reject']) && !empty($_POST['reason_reject'])) {
-        $reason_reject = $_POST['reason_reject']; // Ambil alasan penolakan dari form
-    }
-
-    // Siapkan query untuk memperbarui status
-    $query = "UPDATE dokumen SET status='$status'";
-
-    // Jika alasan penolakan ada, update juga kolom reason_reject
-    if ($reason_reject) {
-        $query .= ", reason_reject='$reason_reject'";
-    }
-
-    // Update status di tabel dokumen
-    $query .= " WHERE create_by='$id_users'";
-
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Status berhasil diperbarui');</script>";
-        header("Location: detail_dokumen.php?id_users=$id_users"); // Setelah update, refresh halaman
-        exit;
-    } else {
-        echo "<script>alert('Gagal memperbarui status');</script>";
-    }
-}
-
-
-// Ambil id_users dari URL
-$id_users = isset($_GET['id_users']) ? $_GET['id_users'] : null;
+// Ambil id_users dari URL atau POST
+$id_users = isset($_GET['id_users']) ? $_GET['id_users'] : (isset($_POST['id_users']) ? $_POST['id_users'] : null);
 
 // Periksa apakah id_users valid
 if (!$id_users) {
@@ -83,9 +48,6 @@ $dokumen_query = mysqli_query($koneksi, "
     WHERE create_by = '$id_users'
 ");
 $dokumen = mysqli_fetch_assoc($dokumen_query);
-
-// Ambil status dari POST (jika ada) atau dari data dokumen
-$status = isset($_POST['status']) ? $_POST['status'] : 'pending'; // Default ke 'pending'
 
 // Ambil data pengguna dan dokumen
 $user_query = mysqli_query($koneksi, "
@@ -241,8 +203,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="time" id="waktu" name="waktu" value="<?= htmlspecialchars($dokumen['waktu']); ?>" required>
                 </div>
             </div>
+
+            <!-- Input tersembunyi untuk mengirim id_users dan status -->
+            <input type="hidden" name="id_users" value="<?= $id_users; ?>"> <!-- id_users dari URL -->
+            <input type="hidden" name="status" value="<?= $dokumen['status']; ?>"> <!-- Status saat ini -->
+
             <button type="submit" name="update_wisuda" class="btn-save">Simpan</button>
         </form>
+
 
         <!-- Form untuk Mengubah Status -->
         <form method="POST">
@@ -255,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="button" class="btn-action btn-reject" onclick="openModal()">✖ Tolak</button>
         </form>
     </div>
-    
+
     <!-- Modal untuk alasan penolakan -->
     <div id="reasonModal" class="modal">
         <div class="modal-content">
