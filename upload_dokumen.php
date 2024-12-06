@@ -28,34 +28,39 @@ if (isset($_POST['submit'])) {
 
     // Validasi apakah file ada
     if ($fileAkte['error'] != 0 || $fileIjasa['error'] != 0 || $filePembayaran['error'] != 0) {
-        echo "Gagal mengunggah, periksa file yang dipilih.";
+        $_SESSION['upload_error'] = "Gagal mengunggah, periksa file yang dipilih.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
     // Validasi jenis file akte (hanya PDF)
     $fileAkteExt = strtolower(pathinfo($fileAkte["name"], PATHINFO_EXTENSION));
     if ($fileAkteExt !== 'pdf') {
-        echo "File akte harus dalam format PDF.";
+        $_SESSION['upload_error'] = "File akte harus dalam format PDF.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
     // Validasi jenis file ijazah (hanya PDF)
     $fileIjasaExt = strtolower(pathinfo($fileIjasa["name"], PATHINFO_EXTENSION));
     if ($fileIjasaExt !== 'pdf') {
-        echo "File ijazah harus dalam format PDF.";
+        $_SESSION['upload_error'] = "File ijazah harus dalam format PDF.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
     // Validasi jenis file pembayaran (hanya PNG atau JPG)
     $filePembayaranExt = strtolower(pathinfo($filePembayaran["name"], PATHINFO_EXTENSION));
     if (!in_array($filePembayaranExt, ['png', 'jpg', 'jpeg'])) {
-        echo "File pembayaran harus dalam format PNG atau JPG.";
+        $_SESSION['upload_error'] = "File pembayaran harus dalam format PNG atau JPG.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
     // Validasi ukuran file
     if ($fileAkte['size'] > $maxFileSize || $fileIjasa['size'] > $maxFileSize || $filePembayaran['size'] > $maxFileSize) {
-        echo "Ukuran file tidak boleh lebih dari 5MB.";
+        $_SESSION['upload_error'] = "Ukuran file tidak boleh lebih dari 5MB.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
@@ -63,7 +68,8 @@ if (isset($_POST['submit'])) {
     $fileAkteName = uniqid() . "_" . basename($fileAkte["name"]);
     $targetFilePathAkte = $targetDir . $fileAkteName;
     if (!move_uploaded_file($fileAkte["tmp_name"], $targetFilePathAkte)) {
-        echo "Gagal mengunggah file akte.";
+        $_SESSION['upload_error'] = "Gagal mengunggah file akte.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
@@ -71,7 +77,8 @@ if (isset($_POST['submit'])) {
     $fileIjasaName = uniqid() . "_" . basename($fileIjasa["name"]);
     $targetFilePathIjasa = $targetDir . $fileIjasaName;
     if (!move_uploaded_file($fileIjasa["tmp_name"], $targetFilePathIjasa)) {
-        echo "Gagal mengunggah file ijazah.";
+        $_SESSION['upload_error'] = "Gagal mengunggah file ijazah.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
@@ -79,7 +86,8 @@ if (isset($_POST['submit'])) {
     $filePembayaranName = uniqid() . "_" . basename($filePembayaran["name"]);
     $targetFilePathPembayaran = $targetDir . $filePembayaranName;
     if (!move_uploaded_file($filePembayaran["tmp_name"], $targetFilePathPembayaran)) {
-        echo "Gagal mengunggah file pembayaran.";
+        $_SESSION['upload_error'] = "Gagal mengunggah file pembayaran.";
+        header("Location: daftar_wisuda.php");
         exit();
     }
 
@@ -90,15 +98,26 @@ if (isset($_POST['submit'])) {
     $stmt->bind_param("sssi", $fileAkteName, $fileIjasaName, $filePembayaranName, $userId);
 
     if ($stmt->execute()) {
+        // Menandai pendaftaran wisuda berhasil
+        $_SESSION['daftar_wisuda'] = true; // Menandakan user sudah mendaftar
         $_SESSION['upload_success'] = "Dokumen berhasil diunggah. Status saat ini: pending.";
     } else {
         $_SESSION['upload_error'] = "Gagal menyimpan dokumen, silahkan coba lagi.";
     }
 
+    // Set status dokumen menjadi 'pending'
+    $_SESSION['status_dokumen'] = 'pending';
+
+    // Simulasi setelah dokumen di-upload, status berubah menjadi 'approved' atau 'rejected'
+    // Anda bisa mengganti ini sesuai dengan proses pemeriksaan dokumen
+
+    $_SESSION['status_dokumen'] = 'approved'; // Ubah ini jika dokumen disetujui
+    $_SESSION['daftar_wisuda'] = true; // Tandai pengguna sudah mendaftar
+
     $stmt->close();
     $koneksi->close();
 
-    header("Location: daftar_wisuda.php");
+    header("Location: dashboard.php");
     exit();
 }
 ?>

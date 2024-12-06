@@ -87,14 +87,6 @@ $invitations_result = $koneksi->query($query);
                     </a>
                 </li>
                 <li>
-                    <a href="daftar_wisuda.php">
-                        <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
-                        </span>
-                        <span class="title">Daftar Wisuda</span>
-                    </a>
-                </li>
-                <li>
                     <a href="kartu_undangan.php">
                         <span class="icon">
                             <ion-icon name="chatbubble-outline"></ion-icon>

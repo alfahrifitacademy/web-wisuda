@@ -152,14 +152,33 @@ body {
   left: 80px;
 }
 
+/* Styling untuk topbar */
 .topbar {
   width: 100%;
   height: 60px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Memastikan ruang terbagi antara elemen kiri dan kanan */
   align-items: center;
-  padding: 0 10px;
+  padding: 0px 10px;
   background-color: var(--yellow);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling untuk container user dan notifikasi */
+.topbar .user-notifications {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Memberikan jarak antara foto profil dan lonceng */
+  justify-content: flex-end;  /* Pastikan elemen-elemen berada di kanan */
+}
+
+/* Styling untuk foto profil */
+.topbar .user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
 }
 
 .toggle {
@@ -167,7 +186,6 @@ body {
   width: 60px;
   height: 60px;
   display: flex;
-  justify-content: center;
   align-items: center;
   font-size: 2.5rem;
   cursor: pointer;
@@ -180,15 +198,6 @@ body {
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-}
-
-.user img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* Style untuk container form */
@@ -445,3 +454,78 @@ form button[type="submit"]:hover {
     font-size: 14px;
   }
 }
+
+ /* Styling untuk notifikasi */
+ .notification-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Posisi dan tampilan ikon lonceng */
+.notification-bell {
+  position: relative;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 5px;
+  display: none; /* Sembunyikan tanda merah secara default */
+}
+
+/* Popout notifikasi */
+.notification-popup {
+  display: none;
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 300px;
+  z-index: 999;
+  max-height: 300px;  /* Batas tinggi maksimal untuk notifikasi */
+  overflow-y: auto;    /* Scroll jika terlalu panjang */
+}
+
+.notification-popup.active {
+  display: block; /* Popout muncul saat class 'active' ditambahkan */
+}
+
+/* Menambahkan indikator peringatan pada lonceng jika ada notifikasi */
+.notification-bell.has-notifications .notification-count {
+  display: block;
+}
+
+/* Styling untuk popout notifikasi */
+.notification-popup h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.notification-popup ul {
+  margin: 10px 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.notification-popup p {
+  margin: 10px 0 0;
+}
+
+.notification-popup.active {
+  display: block;
+}
+
+
+

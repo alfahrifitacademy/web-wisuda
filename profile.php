@@ -428,6 +428,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }, 5000);
                 });
             </script>
+        </div>
+    </div>
 </body>
 
 </html>
