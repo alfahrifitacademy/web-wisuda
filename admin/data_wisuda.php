@@ -64,16 +64,24 @@ $users_query = "SELECT u.id_users, u.nama, u.nim, f.fakultas, j.jurusan, u.creat
                 LEFT JOIN dokumen d ON u.id_users = d.create_by";
 $users = mysqli_query($koneksi, $users_query);
 
-// Update tgl_wisuda dan waktu untuk semua pengguna yang meng-upload dokumen
+// Update tgl_wisuda dan waktu untuk semua dokumen
 if (isset($_POST['update_wisuda'])) {
     $tgl_wisuda = $_POST['tgl_wisuda'];
     $waktu = $_POST['waktu'];
 
-    // Update tgl_wisuda dan waktu pada dokumen untuk semua pengguna
-    $update_query = "UPDATE dokumen SET tgl_wisuda='$tgl_wisuda', waktu='$waktu' WHERE tgl_wisuda IS NULL OR waktu IS NULL";
-    mysqli_query($koneksi, $update_query);
+    // Update tgl_wisuda dan waktu pada semua dokumen
+    $update_query = "UPDATE dokumen SET tgl_wisuda='$tgl_wisuda', waktu='$waktu'";
 
-    echo "<script>alert('Tanggal Wisuda dan Waktu berhasil diperbarui');</script>";
+    // Eksekusi query
+    $result = mysqli_query($koneksi, $update_query);
+
+    if ($result) {
+        echo "<script>alert('Tanggal Wisuda dan Waktu berhasil diperbarui untuk semua dokumen');</script>";
+    } else {
+        echo "<script>alert('Gagal memperbarui data');</script>";
+    }
+
+    // Redirect setelah update
     header("Location: data_wisuda.php");
     exit;
 }
