@@ -186,10 +186,10 @@ if (isset($_POST['update_wisuda'])) {
                 <h2>Tabel Data Wisuda</h2>
 
                 <!-- Tombol untuk menambah periode/tanggal wisuda -->
-                <button class="btn-tambah" onclick="openModal()">Set Tanggal Wisuda & Waktu</button>
+                <button class="btn-tambah" data-bs-toggle="modal" data-bs-target="#wisudaModal">Set Tanggal Wisuda & Waktu</button>
 
                 <!-- Modal untuk menambah Tanggal Wisuda dan Waktu -->
-                <div class="modal fade" id="wisudaModal" tabindex="-1" aria-labelledby="wisudaModalLabel" aria-hidden="true">
+                <div class="modal" id="wisudaModal" tabindex="-1" aria-labelledby="wisudaModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -211,6 +211,7 @@ if (isset($_POST['update_wisuda'])) {
                         </div>
                     </div>
                 </div>
+
 
                 <table id="wisudaTable" class="table-wisuda">
                     <thead>
@@ -294,21 +295,16 @@ if (isset($_POST['update_wisuda'])) {
                         })
                         .catch(error => console.error('Error:', error));
                 }
-                // Fungsi untuk membuka modal
-                function openModal() {
-                    document.getElementById("wisudaModal").style.display = "block";
-                }
-
-                // Fungsi untuk menutup modal
-                function closeModal() {
-                    document.getElementById("wisudaModal").style.display = "none";
-                }
             </script>
         </div>
     </div>
 
     <!-- =========== Scripts =========  -->
     <script src="../admin/assets/js/main.js"></script>
+
+
+    <!-- Bootstrap 5 JS (untuk modal) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

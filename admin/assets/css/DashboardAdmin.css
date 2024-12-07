@@ -946,3 +946,99 @@ h3::before {
     left: initial;
   }
 }
+
+/* Style untuk tombol Set Tanggal Wisuda & Waktu */
+.btn-tambah {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-tambah:hover {
+  background-color: #0056b3;
+}
+
+/* Modal Style */
+.modal-dialog {
+  margin: 10% auto;
+  width: 80%; /* Sesuaikan ukuran lebar modal */
+  max-width: 500px; /* Batas lebar maksimal */
+}
+
+.modal-header {
+  background-color: #f1f1f1;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body label {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.modal-body input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 15px;
+  background-color: #f1f1f1;
+  text-align: right;
+}
+
+/* Button Styling */
+.modal-footer .btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.modal-footer .btn-secondary {
+  background-color: #6c757d;
+}
+
+.modal-footer .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #0056b3;
+}
+
