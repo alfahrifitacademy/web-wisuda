@@ -125,60 +125,6 @@ switch ($action) {
         }
         break;
 
-    case 'read':
-        // Ambil data undangan dari database untuk ditampilkan
-        $result = $koneksi->query("SELECT * FROM guest WHERE create_by = $user_id");
-        ?>
-
-        <!DOCTYPE html>
-        <html lang="id">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>CRUD Undangan</title>
-        </head>
-        <body>
-            <h2>Tambah Undangan</h2>
-            <form action="guest_crud.php?action=create" method="post">
-                <label for="kepada">Kepada:</label>
-                <input type="text" name="kepada" id="kepada" required>
-                <button type="submit">Tambah</button>
-            </form>
-
-            <h2>Daftar Undangan</h2>
-            <table border="1">
-                <tr>
-                    <th>No</th>
-                    <th>Kepada</th>
-                    <th>Dibuat</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-                <?php
-                $no = 1;
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . $no++ . "</td>";
-                    echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                    echo "<td>
-                        <a href='guest_crud.php?action=update&id_guest=" . $row['id_guest'] . "'>Edit</a> |
-                        <a href='guest_crud.php?action=delete&id_guest=" . $row['id_guest'] . "'>Hapus</a>";
-                    if ($row['status'] == 'Pending') {
-                        echo " | <a href='guest_crud.php?action=approve&id_guest=" . $row['id_guest'] . "'>Setujui</a>";
-                    }
-                    echo "</td>";
-                    echo "</tr>";
-                }
-                ?>
-            </table>
-        </body>
-        </html>
-
-        <?php
-        break;
-
     case 'update':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_guest = $_POST['id_guest'];

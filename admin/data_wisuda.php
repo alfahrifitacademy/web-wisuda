@@ -35,7 +35,7 @@ $dokumen_data = mysqli_query($koneksi, "
 function getDokumenData($koneksi, $id_users)
 {
     $result = mysqli_query($koneksi, "
-        SELECT id_dokumen, file_akte, file_ijazah, file_pembayaran, status, tanggal_wisuda, waktu_wisuda
+        SELECT id_dokumen, file_akte, file_ijazah, file_pembayaran, status, tgl_wisuda, waktu
         FROM dokumen
         WHERE create_by = '$id_users'
     ");
@@ -57,12 +57,26 @@ if (isset($_POST['simpan_status'])) {
 }
 
 // Ambil data pengguna yang berstatus 'approved', 'rejected', atau 'pending'
-$users_query = "SELECT u.id_users, u.nama, u.nim, f.fakultas, j.jurusan, u.created_at, d.status 
+$users_query = "SELECT u.id_users, u.nama, u.nim, f.fakultas, j.jurusan, u.created_at, d.status, d.tgl_wisuda, d.waktu
                 FROM users u
                 LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
                 LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
                 LEFT JOIN dokumen d ON u.id_users = d.create_by";
 $users = mysqli_query($koneksi, $users_query);
+
+// Update tgl_wisuda dan waktu untuk semua pengguna yang meng-upload dokumen
+if (isset($_POST['update_wisuda'])) {
+    $tgl_wisuda = $_POST['tgl_wisuda'];
+    $waktu = $_POST['waktu'];
+
+    // Update tgl_wisuda dan waktu pada dokumen untuk semua pengguna
+    $update_query = "UPDATE dokumen SET tgl_wisuda='$tgl_wisuda', waktu='$waktu' WHERE tgl_wisuda IS NULL OR waktu IS NULL";
+    mysqli_query($koneksi, $update_query);
+
+    echo "<script>alert('Tanggal Wisuda dan Waktu berhasil diperbarui');</script>";
+    header("Location: data_wisuda.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -170,6 +184,34 @@ $users = mysqli_query($koneksi, $users_query);
 
             <div class="containerTable">
                 <h2>Tabel Data Wisuda</h2>
+
+                <!-- Tombol untuk menambah periode/tanggal wisuda -->
+                <button class="btn-tambah" onclick="openModal()">Set Tanggal Wisuda & Waktu</button>
+
+                <!-- Modal untuk menambah Tanggal Wisuda dan Waktu -->
+                <div class="modal fade" id="wisudaModal" tabindex="-1" aria-labelledby="wisudaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="wisudaModalLabel">Tambah Periode Wisuda</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="data_wisuda.php" method="POST">
+                                <div class="modal-body">
+                                    <label for="tgl_wisuda">Tanggal Wisuda:</label>
+                                    <input type="date" name="tgl_wisuda" required class="form-control">
+                                    <label for="waktu">Waktu Wisuda:</label>
+                                    <input type="time" name="waktu" required class="form-control">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" name="update_wisuda" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <table id="wisudaTable" class="table-wisuda">
                     <thead>
                         <tr>
@@ -179,6 +221,8 @@ $users = mysqli_query($koneksi, $users_query);
                             <th>Fakultas</th>
                             <th>Jurusan</th>
                             <th>Status</th>
+                            <th>Tanggal Wisuda</th>
+                            <th>Waktu</th>
                             <th>Dibuat</th>
                             <th>Aksi</th>
                         </tr>
@@ -212,6 +256,12 @@ $users = mysqli_query($koneksi, $users_query);
                                         <?= htmlspecialchars($user['status'] ?? 'Data Kosong'); ?>
                                     </span>
                                 </td>
+                                <td>
+                                    <?= !empty($user['tgl_wisuda']) ? date("d F Y", strtotime($user['tgl_wisuda'])) : 'Belum ditentukan'; ?>
+                                </td>
+                                <td>
+                                    <?= !empty($user['waktu']) ? date("H:i", strtotime($user['waktu'])) : 'Belum ditentukan'; ?>
+                                </td>
                                 <td><?= htmlspecialchars($user['created_at'] ?? 'Tidak tersedia'); ?></td>
                                 <td><a href="detail_dokumen.php?id_users=<?= $user['id_users']; ?>" class="btn-cek">Cek Berkas</a></td>
                             </tr>
@@ -243,6 +293,15 @@ $users = mysqli_query($koneksi, $users_query);
                             }
                         })
                         .catch(error => console.error('Error:', error));
+                }
+                // Fungsi untuk membuka modal
+                function openModal() {
+                    document.getElementById("wisudaModal").style.display = "block";
+                }
+
+                // Fungsi untuk menutup modal
+                function closeModal() {
+                    document.getElementById("wisudaModal").style.display = "none";
                 }
             </script>
         </div>

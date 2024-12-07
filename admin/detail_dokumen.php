@@ -19,35 +19,6 @@ if (!$id_users) {
     exit;
 }
 
-// Update Tanggal dan Waktu Wisuda jika form disubmit
-if (isset($_POST['update_wisuda'])) {
-    $tgl_wisuda = $_POST['tgl_wisuda'];
-    $waktu = $_POST['waktu'];
-
-    $update_query = "UPDATE dokumen SET tgl_wisuda = '$tgl_wisuda', waktu = '$waktu' WHERE create_by = '$id_users'";
-    if (mysqli_query($koneksi, $update_query)) {
-        echo "<script>alert('Tanggal dan Waktu Wisuda berhasil diperbarui');</script>";
-    } else {
-        echo "<script>alert('Gagal memperbarui Tanggal dan Waktu Wisuda');</script>";
-    }
-}
-
-// Ambil data pengguna dan dokumen
-$user_query = mysqli_query($koneksi, "
-    SELECT u.nama, u.nim, f.fakultas, j.jurusan, u.created_at 
-    FROM users u
-    LEFT JOIN fakultas f ON u.fakultas = f.id_fakultas
-    LEFT JOIN jurusan j ON u.jurusan = j.id_jurusan
-    WHERE u.id_users = '$id_users'
-");
-$user = mysqli_fetch_assoc($user_query);
-
-$dokumen_query = mysqli_query($koneksi, "
-    SELECT file_akte, file_ijasa, file_pembayaran, status, tgl_wisuda, waktu, reason_reject 
-    FROM dokumen 
-    WHERE create_by = '$id_users'
-");
-$dokumen = mysqli_fetch_assoc($dokumen_query);
 
 // Ambil data pengguna dan dokumen
 $user_query = mysqli_query($koneksi, "
@@ -189,28 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </p>
             </div>
         </div>
-
-        <!-- Form Edit Tanggal dan Waktu Wisuda -->
-        <h3>Edit Tanggal dan Waktu Wisuda</h3>
-        <form method="POST">
-            <div class="detail-info">
-                <div class="column">
-                    <label for="tgl_wisuda"><strong>Tanggal Wisuda:</strong></label>
-                    <input type="date" id="tgl_wisuda" name="tgl_wisuda" value="<?= htmlspecialchars($dokumen['tgl_wisuda']); ?>" required>
-                </div>
-                <div class="column">
-                    <label for="waktu"><strong>Waktu Wisuda:</strong></label>
-                    <input type="time" id="waktu" name="waktu" value="<?= htmlspecialchars($dokumen['waktu']); ?>" required>
-                </div>
-            </div>
-
-            <!-- Input tersembunyi untuk mengirim id_users dan status -->
-            <input type="hidden" name="id_users" value="<?= $id_users; ?>"> <!-- id_users dari URL -->
-            <input type="hidden" name="status" value="<?= $dokumen['status']; ?>"> <!-- Status saat ini -->
-
-            <button type="submit" name="update_wisuda" class="btn-save">Simpan</button>
-        </form>
-
 
         <!-- Form untuk Mengubah Status -->
         <form method="POST">
