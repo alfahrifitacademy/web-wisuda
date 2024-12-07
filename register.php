@@ -51,7 +51,7 @@ unset($_SESSION['error_message']);
 
     <form action="proses_register.php" method="POST">
         <input type="text" name="nama" placeholder="Nama" required>
-        <input type="text" name="nim" placeholder="NIM" required>
+        <input type="text" name="nim" id="nim" placeholder="NIM" required minlength="7" maxlength="7" pattern="\d+" title="NIM harus terdiri dari 7 digit angka">
 
         <!-- Dropdown Fakultas -->
         <select name="fakultas" id="fakultas" required>
@@ -96,6 +96,18 @@ unset($_SESSION['error_message']);
                 jurusanSelect.appendChild(option);
             }
         });
+    });
+    // Menangani submit form untuk validasi NIM
+    document.querySelector('form').addEventListener('submit', function(event) {
+        var nimInput = document.getElementById('nim');
+        var nimValue = nimInput.value;
+
+        // Validasi NIM, hanya angka dan panjangnya harus tepat 7 digit
+        if (nimValue.length !== 7 || !/^\d+$/.test(nimValue)) {
+            event.preventDefault(); // Mencegah form untuk submit
+            alert('NIM harus terdiri dari 7 digit angka.');
+            nimInput.focus(); // Fokuskan ke input NIM
+        }
     });
 </script>
 
