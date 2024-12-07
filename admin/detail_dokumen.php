@@ -161,6 +161,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
+        <h3>Dokumen Guest</h3>
+        <div class="detail-info">
+            <div class="column">
+                <?php
+                // Query untuk mengambil data guest berdasarkan user_id
+                $guest_query = mysqli_query($koneksi, "
+                    SELECT kepada, bukti_pembayaran 
+                    FROM guest 
+                    WHERE create_by = '$id_users'
+                ");
+
+                // Periksa jika ada data guest
+                if (mysqli_num_rows($guest_query) > 0) {
+                    while ($guest = mysqli_fetch_assoc($guest_query)) {
+                        echo "<p><strong>Nama Guest:</strong> " . htmlspecialchars($guest['kepada']) . "</p>";
+
+                        // Cek jika file pembayaran ada
+                        if (!empty($guest['bukti_pembayaran'])) {
+                            echo "<p><strong>File Pembayaran:</strong> 
+                            <a href='../uploads/bukti_pembayaran/" . htmlspecialchars($guest['bukti_pembayaran']) . "' target='_blank' class='btn-view'>Lihat</a>
+                            </p>";
+                        } else {
+                            echo "<p><strong>File Pembayaran:</strong> Tidak tersedia</p>";
+                        }
+                    }
+                } else {
+                    echo "<p>Belum ada guest yang diundang.</p>";
+                }
+                ?>
+            </div>
+        </div>
+
+
         <!-- Form untuk Mengubah Status -->
         <form method="POST">
             <input type="hidden" name="id_users" value="<?= $id_users; ?>">
