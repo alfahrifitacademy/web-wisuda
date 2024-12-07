@@ -1,33 +1,49 @@
 <?php
+session_start(); // Memulai session
+// Koneksi ke database
 include 'admin/db_connnection.php';
 
-// Tangkap data dari form
+// Ambil data dari form
 $nama = $_POST['nama'];
 $nim = $_POST['nim'];
-$fakultas = $_POST['fakultas'];
-$jurusan = $_POST['jurusan'];
+$fakultas_id = $_POST['fakultas'];
+$jurusan_id = $_POST['jurusan'];
 $password = $_POST['password'];
 $confirm_password = $_POST['confirm_password'];
 
-// Cek apakah password dan confirm password sama
-if ($password !== $confirm_password) {
-    echo "Password tidak cocok!";
-    exit();
+// Cek apakah NIM sudah terdaftar
+$queryCheckNIM = "SELECT * FROM users WHERE nim = '$nim'";
+$resultCheckNIM = mysqli_query($koneksi, $queryCheckNIM);
+
+if (mysqli_num_rows($resultCheckNIM) > 0) {
+    // Jika NIM sudah terdaftar, simpan pesan error dan arahkan kembali
+    $_SESSION['error_message'] = 'NIM sudah terdaftar. Silakan gunakan NIM lain.';
+    header('Location: register.php');
+    exit;
 }
 
-// Enkripsi password
-$passwordHash = password_hash($password, PASSWORD_BCRYPT);
+// Pastikan password dan konfirmasi password cocok
+if ($password !== $confirm_password) {
+    $_SESSION['error_message'] = 'Password dan konfirmasi password tidak cocok.';
+    header('Location: register.php');
+    exit;
+}
 
-// Insert data ke tabel users
-$sql = "INSERT INTO users (nama, password, nim, fakultas, jurusan) VALUES (?, ?, ?, ?, ?)";
-$stmt = $koneksi->prepare($sql);
-$stmt->bind_param("sssii", $nama, $passwordHash, $nim, $fakultas, $jurusan);
+// Enkripsi password sebelum disimpan
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-if ($stmt->execute()) {
-    // Arahkan ke halaman login setelah registrasi berhasil
-    header("Location: login.php");
-    exit();
+// Simpan data pengguna baru ke database
+$query = "INSERT INTO users (nama, nim, fakultas, jurusan, password) 
+          VALUES ('$nama', '$nim', '$fakultas_id', '$jurusan_id', '$hashed_password')";
+if (mysqli_query($koneksi, $query)) {
+    // Jika pendaftaran berhasil, simpan pesan sukses dan arahkan ke login.php
+    $_SESSION['success_message'] = 'Pendaftaran berhasil! Silakan login.';
+    header('Location: login.php');
+    exit;
 } else {
-    echo "Registrasi gagal: " . $koneksi->error;
+    // Jika ada error dalam query, simpan pesan error
+    $_SESSION['error_message'] = 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.';
+    header('Location: register.php');
+    exit;
 }
 ?>

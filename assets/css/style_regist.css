@@ -12,6 +12,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    flex-direction: column; /* Agar konten (form + alert) berada dalam satu kolom */
 }
 
 .form-container {
@@ -21,6 +22,7 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     width: 400px;
     text-align: center;
+    margin-top: 20px; /* Memberikan jarak atas pada form */
 }
 
 h2 {
@@ -61,4 +63,34 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* Container untuk alert */
+.alert-container {
+    width: 100%;
+    max-width: 400px; /* Membatasi lebar alert agar tidak lebih lebar dari form */
+    margin-bottom: 20px; /* Memberikan jarak antara alert dengan form */
+    text-align: center; /* Agar alert terpusat */
+    margin: 0 auto; /* Mengatur agar alert tetap di tengah */
+}
+
+/* Alert Styles */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Gaya untuk alert sukses */
+.alert.success {
+    background-color: #4CAF50; /* Green */
+}
+
+/* Gaya untuk alert error */
+.alert.error {
+    background-color: #f44336; /* Red */
 }

@@ -1,4 +1,7 @@
 <?php
+// Mulai session untuk mengambil pesan alert
+session_start();
+
 // Koneksi ke database
 include 'admin/db_connnection.php';
 
@@ -15,6 +18,12 @@ $jurusanList = [];
 while ($rowJurusan = $resultJurusan->fetch_assoc()) {
     $jurusanList[] = $rowJurusan;
 }
+
+// Mengambil pesan error atau success dari session
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+
+// Menghapus pesan dari session setelah ditampilkan
+unset($_SESSION['error_message']);
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +35,15 @@ while ($rowJurusan = $resultJurusan->fetch_assoc()) {
     <link rel="stylesheet" href="assets/css/style_regist.css">
 </head>
 <body>
+
+<div class="alert-container">
+    <!-- Tampilkan pesan jika ada -->
+    <?php if ($error_message): ?>
+        <div class="alert error">
+            <?php echo $error_message; ?>
+        </div>
+    <?php endif; ?>
+</div>
 
 <div class="form-container">
     <h2>Silahkan Daftar</h2>

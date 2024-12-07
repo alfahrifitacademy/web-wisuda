@@ -33,6 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "NIM tidak ditemukan!";
     }
 }
+
+// Mengambil pesan sukses dari session jika ada
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
+
+// Menghapus pesan setelah ditampilkan
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="assets/css/style_regist.css">
 </head>
 <body>
-
+<div class="alert-container">
+    <!-- Tampilkan pesan jika ada -->
+    <?php if ($success_message): ?>
+        <div class="alert success">
+            <?php echo $success_message; ?>
+        </div>
+    <?php endif; ?>
+</div>
 <div class="form-container">
     <h2>Login</h2>
     <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
