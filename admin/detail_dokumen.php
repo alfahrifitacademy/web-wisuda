@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container-detail">
         <a href="data_wisuda.php" class="btn-back">← Kembali</a>
-        <h2>Detail Dokumen Mahasiswa</h2>
+        <h2>Detail Mahasiswa</h2>
         <!-- Informasi Mahasiswa -->
         <div class="detail-info">
             <div class="column">
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <!-- Informasi Dokumen -->
-        <h3>Dokumen</h3>
+        <h3>Dokumen Mahasiswa</h3>
         <div class="detail-info">
             <div class="column">
                 <p><strong>File Akte:</strong>
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
-        <h3>Dokumen Guest</h3>
+        <h3>Dokumen Daftar Undangan</h3>
         <div class="detail-info">
             <div class="column">
                 <?php
