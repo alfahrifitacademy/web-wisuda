@@ -23,28 +23,51 @@ $stmt->execute();
 $result = $stmt->get_result();
 $documentStatus = $result->fetch_assoc(); // Ambil status dokumen
 
-// Hitung jumlah notifikasi yang belum dibaca
-$notifications = [
-    'approved' => 0,
-    'rejected' => 0,
-    'pending' => 0
-];
-
-while ($row = $result->fetch_assoc()) {
-    $status = $row['status'];
-    if (array_key_exists($status, $notifications)) {
-        $notifications[$status]++;
-    }
+// Periksa apakah hasilnya null
+if ($documentStatus) {
+    $status = $documentStatus['status'];
+    $reason_reject = $documentStatus['reason_reject'];
+} else {
+    $status = null;
+    $reason_reject = null;
+    // Opsional: Berikan pesan atau nilai default
+    $notificationMessage = "Tidak ada status dokumen untuk pengguna ini.";
 }
 
-// Hitung total notifikasi
-$total_notifications = $notifications['approved'] + $notifications['rejected'] + $notifications['pending'];
+// Menyimpan status dalam session untuk ditampilkan di frontend
+$_SESSION['document_status'] = $documentStatus ?? null;
+$_SESSION['notification_read'] = false; // Set notifikasi belum dibaca jika ada perubahan status
 
-// Simpan alasan penolakan jika ada
-$reason_reject = '';
-if ($notifications['rejected'] > 0) {
-    $reason_reject = $row['reason_reject'];  // Ambil alasan penolakan terakhir
+
+if ($status == 'approved') {
+    $notificationMessage = 'Dokumen Anda telah disetujui! Anda dapat mengakses Kartu Undangan.';
+} elseif ($status == 'rejected') {
+    $notificationMessage = 'Dokumen Anda ditolak. Harap daftar ulang. Alasan: ' . htmlspecialchars($reason_reject);
 }
+
+// Menyimpan status dalam session untuk ditampilkan di frontend
+if ($documentStatus) {
+    $_SESSION['document_status'] = $documentStatus;
+    $_SESSION['notification_read'] = false; // Set notifikasi belum dibaca
+} else {
+    $_SESSION['document_status'] = null;
+    $_SESSION['notification_read'] = true; // Tidak ada notifikasi
+}
+
+// Periksa apakah hasilnya null
+if ($documentStatus) {
+    $status = $documentStatus['status'];
+    $reason_reject = $documentStatus['reason_reject'];
+} else {
+    $status = null;
+    $reason_reject = null;
+    // Opsional: Berikan pesan atau nilai default
+    $notificationMessage = "Tidak ada status dokumen untuk pengguna ini.";
+}
+
+// Menyimpan status dalam session untuk ditampilkan di frontend
+$_SESSION['document_status'] = $documentStatus ?? null;
+$_SESSION['notification_read'] = false; // Set notifikasi belum dibaca jika ada perubahan status
 
 // Menutup koneksi
 $stmt->close();
@@ -113,44 +136,20 @@ $koneksi->close();
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
-                <!-- Notifikasi dan Foto Profil di kanan -->
-                <div class="notification-container">
-                    <!-- Ikon lonceng dengan jumlah notifikasi -->
-                    <div class="notification-bell">
-                        <ion-icon name="notifications-outline"></ion-icon>
-                        <div class="notification-count"><?php echo $total_notifications; ?></div>
-                    </div>
-
-                    <!-- Popout Notifikasi -->
-                    <div class="notification-popup">
-                        <h3>Notifikasi</h3>
-                        <?php if ($total_notifications > 0): ?>
-                            <ul>
-                                <?php if ($notifications['approved'] > 0): ?>
-                                    <li>Dokumen Anda telah disetujui.</li>
-                                <?php endif; ?>
-
-                                <?php if ($notifications['rejected'] > 0): ?>
-                                    <li>Dokumen Anda ditolak. Alasan: <?php echo htmlspecialchars($reason_reject); ?></li>
-                                <?php endif; ?>
-
-                                <?php if ($notifications['pending'] > 0): ?>
-                                    <li>Dokumen Anda sedang diproses. Mohon tunggu.</li>
-                                <?php endif; ?>
-                            </ul>
-                        <?php else: ?>
-                            <p>Tidak ada notifikasi baru.</p>
-                        <?php endif; ?>
+                <!-- Notifikasi -->
+                <div class="notification" onclick="toggleNotification()">
+                    <ion-icon name="notifications-outline" id="notificationIcon"></ion-icon>
+                    <div class="notification-popup" id="notificationPopup">
+                        <div class="popup-content" id="popupContent"></div>
                     </div>
                 </div>
+
 
                 <!-- Foto Profil -->
                 <div class="user">
                     <img src="assets/img/customer01.png" alt="pp" />
                 </div>
             </div>
-
-
 
             <!-- ============ Main Dashboard Content =========== -->
             <div class="dashboard-content">
@@ -179,33 +178,59 @@ $koneksi->close();
             </div>
         </div>
     </div>
-
-    <!-- Script untuk mengatur notifikasi -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ambil elemen lonceng dan popout
-            var bellIcon = document.querySelector('.notification-bell');
-            var notificationPopup = document.querySelector('.notification-popup');
+        window.onload = function() {
+            const notificationIcon = document.getElementById('notificationIcon');
+            const notificationPopup = document.getElementById('notificationPopup');
+            const popupContent = document.getElementById('popupContent');
 
-            // Cek jumlah notifikasi dari PHP
-            var notificationsCount = <?php echo $total_notifications; ?>;
+            // Mendapatkan status dokumen dari session (dari PHP)
+            <?php if (isset($_SESSION['document_status'])): ?>
+                const status = '<?php echo $_SESSION['document_status']['status']; ?>';
+                const reason = '<?php echo $_SESSION['document_status']['reason_reject']; ?>';
+                const notificationRead = <?php echo $_SESSION['notification_read'] ? 'true' : 'false'; ?>;
 
-            // Jika ada notifikasi, tampilkan tanda merah
-            if (notificationsCount > 0) {
-                bellIcon.classList.add('has-notifications');
-            } else {
-                bellIcon.classList.remove('has-notifications');
+                // Jika notifikasi belum dibaca
+                if (!notificationRead) {
+                    notificationIcon.style.color = 'red'; // Warna merah untuk notifikasi belum dibaca
+                } else {
+                    notificationIcon.style.color = 'black'; // Warna hitam jika sudah dibaca
+                }
+
+                // Menampilkan isi popup berdasarkan status dokumen
+                if (status === 'approved') {
+                    popupContent.innerHTML = "<p>Dokumen Anda sudah disetujui! Anda sekarang dapat mengakses <a href='kartu_undangan.php'>Kartu Undangan</a>.</p>";
+                } else if (status === 'rejected') {
+                    popupContent.innerHTML = `<p>Dokumen Anda ditolak. Alasan: ${reason}. Silakan perbaiki dan <a href='daftar_wisuda.php'>Daftar Ulang</a>.</p>`;
+                }
+            <?php endif; ?>
+        };
+
+        // Fungsi untuk menampilkan notifikasi
+        function toggleNotification() {
+            const notificationIcon = document.getElementById('notificationIcon');
+            const notificationPopup = document.getElementById('notificationPopup');
+
+            // Toggle popout visibility
+            notificationPopup.style.display = notificationPopup.style.display === 'block' ? 'none' : 'block';
+
+            // Jika belum dibaca, ubah ikon menjadi hitam
+            notificationIcon.style.color = 'black'; // Ikon menjadi hitam saat diklik
+
+            // Update status notifikasi sudah dibaca
+            <?php $_SESSION['notification_read'] = true; ?>
+        }
+
+        // Menutup popup jika klik di luar elemen notifikasi
+        window.addEventListener('click', function(event) {
+            const notificationPopup = document.getElementById('notificationPopup');
+            const notificationIcon = document.getElementById('notificationIcon');
+            if (!notificationIcon.contains(event.target) && !notificationPopup.contains(event.target)) {
+                notificationPopup.style.display = 'none';
             }
-
-            // Fungsi untuk toggle popout notifikasi
-            function toggleNotificationPopup() {
-                notificationPopup.classList.toggle('active');
-            }
-
-            // Event listener untuk lonceng
-            bellIcon.addEventListener('click', toggleNotificationPopup);
         });
     </script>
+
 
     <!-- =========== Scripts =========  -->
     <script src="assets/js/dashboard.js"></script>

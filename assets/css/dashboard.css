@@ -164,40 +164,30 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Styling untuk container user dan notifikasi */
-.topbar .user-notifications {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Memberikan jarak antara foto profil dan lonceng */
-  justify-content: flex-end;  /* Pastikan elemen-elemen berada di kanan */
-}
-
-/* Styling untuk foto profil */
-.topbar .user img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  object-fit: cover;
-}
-
-.toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
+/* Memastikan toggle berada di paling kiri */
+.topbar .toggle {
+  margin-right: auto; /* Menempatkan toggle di kiri */
   display: flex;
   align-items: center;
   font-size: 2.5rem;
   cursor: pointer;
 }
 
-.user {
+/* Styling untuk foto profil */
+.topbar .user {
   position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
+}
+
+.topbar .user img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 /* Style untuk container form */
@@ -455,77 +445,87 @@ form button[type="submit"]:hover {
   }
 }
 
- /* Styling untuk notifikasi */
- .notification-container {
-  display: flex;
-  align-items: center;
+/* Styling untuk notifikasi (di sebelah kanan) */
+.notification {
   position: relative;
-}
-
-/* Posisi dan tampilan ikon lonceng */
-.notification-bell {
-  position: relative;
-  font-size: 24px;
+  margin-right: 10px; /* Menjaga jarak antara ikon notifikasi dan foto profil */
   cursor: pointer;
 }
 
-.notification-count {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  border-radius: 50%;
-  padding: 5px;
-  display: none; /* Sembunyikan tanda merah secara default */
+.notification ion-icon {
+  font-size: 24px;
 }
 
-/* Popout notifikasi */
+/* Styling Popup Notifikasi */
 .notification-popup {
-  display: none;
   position: absolute;
   top: 35px;
   right: 0;
-  background-color: #fff;
+  background: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
   width: 300px;
-  z-index: 999;
-  max-height: 300px;  /* Batas tinggi maksimal untuk notifikasi */
-  overflow-y: auto;    /* Scroll jika terlalu panjang */
+  max-height: 250px;
+  overflow-y: auto;
+  display: none; /* Menyembunyikan popup secara default */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  border-radius: 8px;
+  padding: 10px;
 }
 
-.notification-popup.active {
-  display: block; /* Popout muncul saat class 'active' ditambahkan */
-}
-
-/* Menambahkan indikator peringatan pada lonceng jika ada notifikasi */
-.notification-bell.has-notifications .notification-count {
-  display: block;
-}
-
-/* Styling untuk popout notifikasi */
-.notification-popup h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.notification-popup ul {
-  margin: 10px 0;
-  padding-left: 20px;
-  list-style-type: disc;
+.notification-popup .popup-content {
+  font-size: 14px;
 }
 
 .notification-popup p {
-  margin: 10px 0 0;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-.notification-popup.active {
-  display: block;
+/* Tanda merah pada ikon notifikasi jika belum dibaca */
+.notification .unread ion-icon {
+  color: red;
+  font-size: 28px;
+  position: relative;
 }
 
+/* Tambahkan titik merah pada ikon notifikasi */
+.notification .unread ion-icon::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+/* Default (belum dibaca, ikon merah) */
+.notification #notificationIcon {
+  color: red;
+  cursor: pointer;
+}
+
+/* Jika sudah dibaca (ikon hitam) */
+.notification.read #notificationIcon {
+  color: black;
+}
+
+/* Gaya saat notifikasi telah dibaca */
+.notification .read ion-icon {
+  color: black;
+}
+
+/* Default (belum dibaca, warna merah) */
+.notification .notification-icon {
+  color: red;
+  cursor: pointer;
+}
+
+/* Jika sudah dibaca (ikon berubah menjadi hitam) */
+.notification.read .notification-icon {
+  color: black;
+}
 
 
