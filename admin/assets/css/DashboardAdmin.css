@@ -832,42 +832,63 @@ h3::before {
   grid-gap: 30px;
 }
 
-.cardBox .card {
+.card {
   position: relative;
-  background: var(--white);
   padding: 30px;
   border-radius: 20px;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease-in-out;
+  color: #fff; /* Warna teks default */
 }
 
-.cardBox .card .numbers {
-  position: relative;
-  font-weight: 500;
+/* Warna latar belakang setiap card */
+.card-wisuda {
+  background: #4caf50; /* Hijau */
+}
+
+.card-mahasiswa {
+  background: #2196f3; /* Biru */
+}
+
+.card-fakultas {
+  background: #ff9800; /* Oranye */
+}
+
+.card-jurusan {
+  background: #e91e63; /* Merah Muda */
+}
+
+/* Style untuk teks di dalam card */
+.card .numbers {
   font-size: 2.5rem;
-  color: var(--blue);
+  font-weight: 500;
 }
 
-.cardBox .card .cardName {
-  color: var(--black2);
+.card .cardName {
   font-size: 1.1rem;
   margin-top: 5px;
 }
 
-.cardBox .card .iconBx {
+/* Style untuk icon di dalam card */
+.card .iconBx {
   font-size: 3.5rem;
-  color: var(--black2);
+  opacity: 0.9;
 }
 
-.cardBox .card:hover {
-  background: var(--blue);
+/* Efek hover */
+.card:hover {
+  transform: translateY(-10px); /* Card sedikit terangkat */
+  opacity: 0.9;
 }
-.cardBox .card:hover .numbers,
-.cardBox .card:hover .cardName,
-.cardBox .card:hover .iconBx {
-  color: var(--yellow);
+
+/* Hover effect untuk teks dan icon */
+.card:hover .numbers,
+.card:hover .cardName,
+.card:hover .iconBx {
+  color: #ffeb3b; /* Warna kuning saat hover */
 }
 
 /* ====================== Responsive Design ========================== */
@@ -1041,4 +1062,3 @@ h3::before {
 .modal-footer .btn-primary:hover {
   background-color: #0056b3;
 }
-

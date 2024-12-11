@@ -15,8 +15,8 @@ $result = mysqli_query($koneksi, $query);
 $admin = mysqli_fetch_assoc($result);
 
 // Tentukan path foto profil atau default
-$foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo']) 
-    ? "../" . $admin['photo'] 
+$foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
+    ? "../" . $admin['photo']
     : "/web-wisuda2/assets/img/default-profile.svg";
 ?>
 
@@ -127,7 +127,7 @@ $foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
 
             <!-- ======================= Cards ================== -->
             <div class="cardBox">
-                <div class="card" id="card-wisuda">
+                <div class="card card-wisuda" id="card-wisuda">
                     <div>
                         <div class="numbers" id="wisuda"></div>
                         <div class="cardName">Data Wisuda</div>
@@ -137,7 +137,7 @@ $foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
                     </div>
                 </div>
 
-                <div class="card" id="card-mahasiswa">
+                <div class="card card-mahasiswa" id="card-mahasiswa">
                     <div>
                         <div class="numbers" id="mahasiswa"></div>
                         <div class="cardName">Data Mahasiswa</div>
@@ -147,7 +147,7 @@ $foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
                     </div>
                 </div>
 
-                <div class="card" id="card-fakultas">
+                <div class="card card-fakultas" id="card-fakultas">
                     <div>
                         <div class="numbers" id="fakultas"></div>
                         <div class="cardName">Data Fakultas</div>
@@ -157,7 +157,7 @@ $foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
                     </div>
                 </div>
 
-                <div class="card" id="card-jurusan">
+                <div class="card card-jurusan" id="card-jurusan">
                     <div>
                         <div class="numbers" id="jurusan"></div>
                         <div class="cardName">Data Jurusan</div>
