@@ -4,7 +4,7 @@ require '../admin/db_connnection.php'; // Mengimpor koneksi database
 
 // Periksa apakah admin sudah login
 if (!isset($_SESSION['admin'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit;
 }
 

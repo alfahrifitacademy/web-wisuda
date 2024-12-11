@@ -1,270 +1,160 @@
 <?php
 session_start();
-// Koneksi ke database
-require_once('admin/db_connnection.php');
+require 'admin/db_connnection.php'; // Mengimpor koneksi database
 
-// Cek apakah pengguna sudah login
+// Periksa apakah user sudah login
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
-    exit();
+    exit;
 }
 
-// Ambil ID pengguna yang login
+// Ambil data user dari session
 $user_id = $_SESSION['user_id'];
 
-// Ambil data pengguna dari database
-$sql = "SELECT users.nama, users.nim, users.foto_profile, 
-                fakultas.fakultas, 
-                jurusan.jurusan
-        FROM users
-        LEFT JOIN fakultas ON users.fakultas = fakultas.id_fakultas
-        LEFT JOIN jurusan ON users.jurusan = jurusan.id_jurusan
-        WHERE users.id_users = ?";
-$stmt = $koneksi->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$userData = $result->fetch_assoc();
+// Mengambil data user dari database
+$query = "SELECT * FROM users WHERE id_users='$user_id'";
+$result = mysqli_query($koneksi, $query);
+$user = mysqli_fetch_assoc($result);
 
-// Jika data pengguna ditemukan
-if (!$userData) {
-    echo "Data pengguna tidak ditemukan.";
-    exit();
-}
+// Mengambil data fakultas untuk dropdown
+$fakultasQuery = "SELECT * FROM fakultas";
+$fakultasResult = mysqli_query($koneksi, $fakultasQuery);
 
-$nama = $userData['nama'];
-$nim = $userData['nim'];
-$fakultas = $userData['fakultas'];
-$jurusan = $userData['jurusan'];
-$foto_profil = $userData['foto_profile'];
-$fakultas_id = $userData['fakultas'];
-$jurusan_id = $userData['jurusan'];
-
-// Ambil data fakultas dan jurusan untuk dropdown
-$sqlFakultas = "SELECT * FROM fakultas";
-$stmtFakultas = $koneksi->prepare($sqlFakultas);
-$stmtFakultas->execute();
-$resultFakultas = $stmtFakultas->get_result();
-
-$sqlJurusan = "SELECT * FROM jurusan WHERE fakultas_id = ?";
-$stmtJurusan = $koneksi->prepare($sqlJurusan);
-$stmtJurusan->bind_param("i", $fakultas_id);
-$stmtJurusan->execute();
-$resultJurusan = $stmtJurusan->get_result();
-
-// Menangani perubahan foto profil
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_profil'])) {
-    // Proses upload foto profil
-    $targetDir = "uploads/";
-    $targetFile = $targetDir . basename($_FILES["foto_profil"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-    // Cek apakah file gambar
-    if (getimagesize($_FILES["foto_profil"]["tmp_name"]) === false) {
-        echo "File bukan gambar.";
-        $uploadOk = 0;
+// Ganti Foto Profil
+if (isset($_POST['update_photo'])) {
+    $targetDir = "../uploads/foto_profile/"; // Direktori penyimpanan
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0777, true); // Buat folder jika belum ada
     }
 
-    // Cek ukuran file
-    if ($_FILES["foto_profil"]["size"] > 500000) {
-        echo "Maaf, ukuran file terlalu besar.";
-        $uploadOk = 0;
-    }
+    $fileName = basename($_FILES["profile_photo"]["name"]);
+    $targetFilePath = $targetDir . uniqid() . "_" . $fileName;
 
-    // Cek format file gambar
-    if (!in_array($imageFileType, ['jpg', 'png', 'jpeg', 'gif'])) {
-        echo "Maaf, hanya file JPG, JPEG, PNG & GIF yang diperbolehkan.";
-        $uploadOk = 0;
-    }
-
-    // Jika tidak ada masalah, upload gambar
-    if ($uploadOk === 1) {
-        if (move_uploaded_file($_FILES["foto_profil"]["tmp_name"], $targetFile)) {
-            // Hapus foto lama jika ada
-            if ($foto_profil && file_exists($targetDir . $foto_profil)) {
-                unlink($targetDir . $foto_profil);
+    // Validasi file gambar
+    $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+    $allowedTypes = ['jpg', 'jpeg', 'png'];
+    if (in_array($fileType, $allowedTypes)) {
+        if (move_uploaded_file($_FILES["profile_photo"]["tmp_name"], $targetFilePath)) {
+            // Hapus foto profil lama jika ada
+            if ($user['foto_profile'] && file_exists("../" . $user['foto_profile'])) {
+                unlink("../" . $user['foto_profile']);
             }
 
-            // Update foto profil di database
-            $sqlUpdateFoto = "UPDATE users SET foto_profil = ? WHERE user_id = ?";
-            $stmtUpdateFoto = $koneksi->prepare($sqlUpdateFoto);
-            $stmtUpdateFoto->bind_param("si", $targetFile, $user_id);
-            $stmtUpdateFoto->execute();
+            // Update foto profil di database dengan path relatif
+            $relativeFilePath = "uploads/foto_profile/" . basename($targetFilePath);
+            $query = "UPDATE users SET foto_profile='$relativeFilePath' WHERE id_users='$user_id'";
+            mysqli_query($koneksi, $query);
+
+            $_SESSION['success'] = "Foto profil berhasil diperbarui.";
             header("Location: profile.php");
-            exit();
+            exit;
         } else {
-            echo "Terjadi kesalahan saat mengupload gambar.";
+            $_SESSION['error'] = "Gagal mengunggah foto.";
         }
-    }
-}
-
-if (isset($_GET['fakultas_id'])) {
-    $fakultas_id = $_GET['fakultas_id'];
-
-    $sql = "SELECT * FROM jurusan WHERE fakultas_id = ?";
-    $stmt = $koneksi->prepare($sql);
-    $stmt->bind_param("i", $fakultas_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $jurusan = [];
-    while ($row = $result->fetch_assoc()) {
-        $jurusan[] = $row;
-    }
-
-    echo json_encode($jurusan);
-}
-
-if (isset($_POST['submit'])) {
-    $user_id = $_SESSION['user_id'];
-    $fakultas = $_POST['fakultas'];
-    $jurusan = $_POST['jurusan'];
-    $foto_profile = $_FILES['foto_profile']['name'];
-
-    // Proses upload foto
-    if ($foto_profile) {
-        $target_dir = "assets/img/";
-        $target_file = $target_dir . basename($foto_profile);
-        move_uploaded_file($_FILES['foto_profile']['tmp_name'], $target_file);
     } else {
-        $foto_profile = null;  // Tetap menggunakan foto lama jika tidak upload baru
+        $_SESSION['error'] = "Format file tidak valid. Hanya JPG, JPEG, dan PNG yang diizinkan.";
     }
-
-    // Update data pengguna
-    $sql = "UPDATE users SET fakultas = ?, jurusan = ?, foto_profile = ? WHERE user_id = ?";
-    $stmt = $koneksi->prepare($sql);
-    $stmt->bind_param("issi", $fakultas, $jurusan, $foto_profile, $user_id);
-    $stmt->execute();
-
-    // Redirect ke profile page
-    header("Location: profile.php");
-    exit();
 }
 
-// Menutup koneksi
-$stmt->close();
-$koneksi->close();
+// Ganti Nama Lengkap, Fakultas, dan Jurusan
+if (isset($_POST['update_profile'])) {
+    $new_name = $_POST['name'];
+    $fakultas_id = $_POST['fakultas'];
+    $jurusan_id = $_POST['jurusan'];
+
+    $query = "UPDATE users SET nama='$new_name', fakultas='$fakultas_id', jurusan='$jurusan_id' WHERE id_users='$user_id'";
+    mysqli_query($koneksi, $query);
+    $_SESSION['success'] = "Profil berhasil diperbarui.";
+    header("Location: profile.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Dashboard User</title>
+    <title>Edit Profile</title>
     <link rel="stylesheet" href="assets/css/profil.css">
 </head>
+
 <body>
-    <div class="container">
-        <!-- Main Content -->
-        <div class="main">
-            <div class="topbar">
-                <h1>Profile</h1>
+    <div class="profile-container">
+        <div class="header">
+            <a href="dashboard.php" class="back-button">&larr; Kembali</a>
+            <h1>Edit Profile</h1>
+        </div>
+
+        <div class="profile-content">
+            <!-- Card Avatar -->
+            <div class="card avatar-card">
+                <form action="profile.php" method="POST" enctype="multipart/form-data" class="avatar-form">
+                    <div class="avatar-container">
+                        <label class="avatar-title">Avatar</label>
+                        <img id="avatarPreview" src="<?= $user['foto_profile'] ? "../" . $user['foto_profile'] : "assets/img/default-profile.svg"; ?>" alt="Profile Avatar" class="avatar-img">
+                    </div>
+                    <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="previewAvatar()">
+                    <button type="submit" name="update_photo" class="submit-button">Update Foto</button>
+                </form>
+
             </div>
 
-            <!-- Mode View -->
-            <div class="profile-content">
-                <div class="profile-header">
-                    <div class="profile-photo">
-                        <?php if ($foto_profil): ?>
-                            <img src="uploads/<?php echo htmlspecialchars($foto_profil); ?>" alt="Foto Profil" width="150">
-                        <?php else: ?>
-                            <img src="assets/img/default-profile.png" alt="Foto Profil" width="150">
-                        <?php endif; ?>
-                    </div>
-                    <div class="profile-info">
-                        <h2><?php echo htmlspecialchars($nama); ?></h2>
-                        <p><strong>NIM:</strong> <?php echo htmlspecialchars($nim); ?></p>
-                        <p><strong>Fakultas:</strong> <?php echo htmlspecialchars($fakultas); ?></p>
-                        <p><strong>Jurusan:</strong> <?php echo htmlspecialchars($jurusan); ?></p>
-                    </div>
-                </div>
-
-                <!-- Button untuk Edit -->
-                <button class="btn-edit" onclick="toggleEditMode()">Edit Profil</button>
-            </div>
-
-            <!-- Mode Edit -->
-            <div class="profile-edit" id="profileEdit" style="display: none;">
-                <form action="profile.php" method="POST" enctype="multipart/form-data">
+            <!-- Card Form -->
+            <div class="card form-card">
+                <form action="profile.php" method="POST">
                     <div class="form-group">
-                        <label for="foto_profil">Foto Profil:</label>
-                        <input type="file" name="foto_profil" id="foto_profil">
-                        <button type="button" class="btn-modal" onclick="openModal()">Ganti Foto</button>
+                        <label for="name">Nama Lengkap</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($user['nama']); ?>" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="fakultas">Fakultas:</label>
-                        <select name="fakultas_id" id="fakultas_id" onchange="updateJurusan()">
-                            <?php while ($rowFakultas = $resultFakultas->fetch_assoc()): ?>
-                                <option value="<?php echo $rowFakultas['id_fakultas']; ?>" <?php echo ($rowFakultas['id_fakultas'] == $fakultas_id) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($rowFakultas['fakultas']); ?>
+                        <label for="fakultas">Fakultas</label>
+                        <select id="fakultas" name="fakultas" onchange="updateJurusan()" required>
+                            <option value="">-- Pilih Fakultas --</option>
+                            <?php while ($fakultas = mysqli_fetch_assoc($fakultasResult)) { ?>
+                                <option value="<?= $fakultas['id_fakultas']; ?>" <?= ($user['fakultas'] == $fakultas['id_fakultas']) ? 'selected' : ''; ?>>
+                                    <?= htmlspecialchars($fakultas['fakultas']); ?>
                                 </option>
-                            <?php endwhile; ?>
+                            <?php } ?>
                         </select>
                     </div>
-
                     <div class="form-group">
-                        <label for="jurusan">Jurusan:</label>
-                        <select name="jurusan_id" id="jurusan_id">
-                            <?php while ($rowJurusan = $resultJurusan->fetch_assoc()): ?>
-                                <option value="<?php echo $rowJurusan['id_jurusan']; ?>" <?php echo ($rowJurusan['id_jurusan'] == $jurusan_id) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($rowJurusan['jurusan']); ?>
+                        <label for="jurusan">Jurusan</label>
+                        <select id="jurusan" name="jurusan" required>
+                            <option value="">-- Pilih Jurusan --</option>
+                            <?php
+                            $jurusanQuery = "SELECT * FROM jurusan WHERE fakultas_id='" . $user['fakultas'] . "'";
+                            $jurusanResult = mysqli_query($koneksi, $jurusanQuery);
+                            while ($jurusan = mysqli_fetch_assoc($jurusanResult)) { ?>
+                                <option value="<?= $jurusan['id_jurusan']; ?>" <?= ($user['jurusan'] == $jurusan['id_jurusan']) ? 'selected' : ''; ?>>
+                                    <?= htmlspecialchars($jurusan['jurusan']); ?>
                                 </option>
-                            <?php endwhile; ?>
+                            <?php } ?>
                         </select>
                     </div>
-
-                    <button type="submit" class="btn-submit">Simpan Perubahan</button>
+                    <button type="submit" name="update_profile" class="submit-button">Simpan</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal untuk ganti foto -->
-    <div class="modal" id="modalFoto">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Ganti Foto Profil</h2>
-            <form action="profile.php" method="POST" enctype="multipart/form-data">
-                <input type="file" name="foto_profil" required>
-                <button type="submit">Upload Foto</button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        function toggleEditMode() {
-            var editMode = document.getElementById('profileEdit');
-            editMode.style.display = (editMode.style.display === 'none') ? 'block' : 'none';
-        }
+        // Preview Foto Profil Sebelum Diupload
+        function previewAvatar() {
+            const fileInput = document.getElementById('profilePhotoInput');
+            const previewImage = document.getElementById('avatarPreview');
 
-        function openModal() {
-            document.getElementById('modalFoto').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('modalFoto').style.display = 'none';
-        }
-
-        function updateJurusan() {
-            var fakultasId = document.getElementById('fakultas_id').value;
-            var jurusanSelect = document.getElementById('jurusan_id');
-
-            fetch('get_jurusan.php?fakultas_id=' + fakultasId)
-                .then(response => response.json())
-                .then(data => {
-                    jurusanSelect.innerHTML = '';
-                    data.forEach(jurusan => {
-                        var option = document.createElement('option');
-                        option.value = jurusan.id_jurusan;
-                        option.textContent = jurusan.jurusan;
-                        jurusanSelect.appendChild(option);
-                    });
-                });
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
     </script>
 </body>
+
 </html>
