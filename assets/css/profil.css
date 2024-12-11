@@ -111,3 +111,24 @@ body {
 .submit-button:hover {
     background-color: #ffa500;
 }
+
+/* Container untuk input password dengan ikon */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    width: 100%;
+    padding-right: 40px; /* Beri ruang untuk ikon mata */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+}

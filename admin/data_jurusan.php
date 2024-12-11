@@ -1,14 +1,13 @@
 <?php
 session_start();
+// Hubungkan ke database
+include '../admin/db_connnection.php';
 
 // Periksa apakah admin sudah login
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php"); // Jika belum login, kembali ke halaman login
     exit;
 }
-
-// Hubungkan ke database
-include '../admin/db_connnection.php';
 
 // Ambil data jurusan dengan LEFT JOIN agar tetap tampil meskipun fakultas_id NULL
 $jurusan_data = mysqli_query($koneksi, "
@@ -91,6 +90,17 @@ if (isset($_GET['hapus_jurusan'])) {
 
 // Ambil data fakultas untuk dropdown
 $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
+
+// Ambil data admin dari database berdasarkan admin_id di session
+$admin_id = $_SESSION['admin'];
+$query = "SELECT photo FROM admin WHERE id_admin = '$admin_id'";
+$result = mysqli_query($koneksi, $query);
+$admin = mysqli_fetch_assoc($result);
+
+// Tentukan path foto profil atau default
+$foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo']) 
+    ? "../" . $admin['photo'] 
+    : "/web-wisuda2/assets/img/default-profile.svg";
 ?>
 
 <!DOCTYPE html>
@@ -192,7 +202,9 @@ $fakultas_data = mysqli_query($koneksi, "SELECT * FROM fakultas");
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
                 <div class="user">
-                    <img src="assets/imgs/customer01.jpg" alt="pp">
+                    <a href="profile_settings.php">
+                        <img src="<?= $foto_profile; ?>" alt="Foto Profil" style="cursor: pointer; width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    </a>
                 </div>
             </div>
 
