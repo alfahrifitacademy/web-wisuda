@@ -69,6 +69,17 @@ if ($documentStatus) {
 $_SESSION['document_status'] = $documentStatus ?? null;
 $_SESSION['notification_read'] = false; // Set notifikasi belum dibaca jika ada perubahan status
 
+// Ambil data user dari database berdasarkan user_id di session
+$user_id = $_SESSION['user_id'];
+$query = "SELECT foto_profile FROM users WHERE id_users = '$user_id'";
+$result = mysqli_query($koneksi, $query);
+$user = mysqli_fetch_assoc($result);
+
+// Tentukan path foto profil atau default
+$foto_profile = !empty($user['foto_profile']) && file_exists("../" . $user['foto_profile'])
+    ? "../" . $user['foto_profile']
+    : "assets/img/default-profile.svg";
+
 // Menutup koneksi
 $stmt->close();
 $koneksi->close();
@@ -145,9 +156,11 @@ $koneksi->close();
                 </div>
 
 
-                <!-- Foto Profil -->
+                <!-- Topbar dengan Foto Profil -->
                 <div class="user">
-                    <img src="assets/img/customer01.png" alt="pp" />
+                    <a href="profile.php">
+                        <img src="<?= $foto_profile; ?>" alt="Foto Profil" />
+                    </a>
                 </div>
             </div>
 

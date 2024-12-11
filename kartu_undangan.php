@@ -10,6 +10,17 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// Ambil data user dari database berdasarkan user_id di session
+$user_id = $_SESSION['user_id'];
+$query = "SELECT foto_profile FROM users WHERE id_users = '$user_id'";
+$result = mysqli_query($koneksi, $query);
+$user = mysqli_fetch_assoc($result);
+
+// Tentukan path foto profil atau default
+$foto_profile = !empty($user['foto_profile']) && file_exists("../" . $user['foto_profile'])
+    ? "../" . $user['foto_profile']
+    : "assets/img/default-profile.svg";
+
 // Query untuk menampilkan dokumen yang sudah disetujui (approved) milik pengguna yang login
 $query = "
     SELECT users.id_users, users.nama, users.nim, dokumen.status 
@@ -111,8 +122,11 @@ $invitations_result = $koneksi->query($query);
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
+                <!-- Topbar dengan Foto Profil -->
                 <div class="user">
-                    <img href="profile.php" src="assets/img/customer01.png" alt="pp">
+                    <a href="profile.php">
+                        <img src="<?= $foto_profile; ?>" alt="Foto Profil" />
+                    </a>
                 </div>
             </div>
 
@@ -172,7 +186,7 @@ $invitations_result = $koneksi->query($query);
                         echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['status']) . "</td>";
                         echo "<td>";
-                        
+
                         // Aksi berdasarkan status undangan
                         if ($row['status'] == 'Approved') {
                             echo "<a href='download_guest.php?id_guest=" . $row['id_guest'] . "'>Download Surat</a>";
