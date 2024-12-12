@@ -129,79 +129,79 @@ $invitations_result = $koneksi->query($query);
                     </a>
                 </div>
             </div>
-
-            <h2>Kartu Undangan</h2>
-            <div class="table-container">
-                <table border="1">
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>NIM</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <?php
-                    // Menampilkan data untuk pengguna yang status dokumennya 'approved'
-                    $no = 1;
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $no++ . "</td>";
-                        echo "<td>" . htmlspecialchars($row['nama']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['nim']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['status']) . "</td>"; // Menampilkan status dokumen
-                        echo "<td>";
-                        // Menampilkan link download hanya jika statusnya 'approved'
-                        if ($row['status'] == 'approved') {
-                            echo "<a href='download.php?id_users=" . $row['id_users'] . "'>Download Surat</a>";
-                        } else {
-                            echo "Tidak tersedia"; // Jika status selain 'approved', tampilkan teks ini
+            <div class="content-container">
+                <h2>Kartu Undangan</h2>
+                <div class="table-container">
+                    <table border="1">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>NIM</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <?php
+                        // Menampilkan data untuk pengguna yang status dokumennya 'approved'
+                        $no = 1;
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $no++ . "</td>";
+                            echo "<td>" . htmlspecialchars($row['nama']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['nim']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['status']) . "</td>"; // Menampilkan status dokumen
+                            echo "<td>";
+                            // Menampilkan link download hanya jika statusnya 'approved'
+                            if ($row['status'] == 'approved') {
+                                echo "<a href='download.php?id_users=" . $row['id_users'] . "'>Download Surat</a>";
+                            } else {
+                                echo "Tidak tersedia"; // Jika status selain 'approved', tampilkan teks ini
+                            }
+                            echo "</td>";
+                            echo "</tr>";
                         }
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </table>
-            </div>
+                        ?>
+                    </table>
+                </div>
 
 
-            <!-- Tabel untuk mengelola undangan baru -->
-            <h2>Daftar Undangan</h2>
-            <p><a href="guest_crud.php?action=create">+ Tambah Undangan</a></p>
-            <div class="table-container">
-                <table border="1">
-                    <tr>
-                        <th>No</th>
-                        <th>Kepada</th>
-                        <th>Dibuat</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                    <?php
-                    // Menampilkan data undangan yang terkait dengan user yang login
-                    $no = 1;
-                    while ($row = $invitations_result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $no++ . "</td>";
-                        echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                        echo "<td>";
+                <!-- Tabel untuk mengelola undangan baru -->
+                <h2>Daftar Undangan</h2>
+                <p><a href="guest_crud.php?action=create">+ Tambah Undangan</a></p>
+                <div class="table-container">
+                    <table border="1">
+                        <tr>
+                            <th>No</th>
+                            <th>Kepada</th>
+                            <th>Dibuat</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                        <?php
+                        // Menampilkan data undangan yang terkait dengan user yang login
+                        $no = 1;
+                        while ($row = $invitations_result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $no++ . "</td>";
+                            echo "<td>" . htmlspecialchars($row['kepada']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['created_at']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+                            echo "<td>";
 
-                        // Aksi berdasarkan status undangan
-                        if ($row['status'] == 'Approved') {
-                            echo "<a href='download_guest.php?id_guest=" . $row['id_guest'] . "'>Download Surat</a>";
-                        } else {
-                            echo "<a href='guest_crud.php?action=update&id_guest=" . $row['id_guest'] . "'>Edit</a> | ";
-                            echo "<a href='guest_crud.php?action=delete&id_guest=" . $row['id_guest'] . "'>Hapus</a>";
+                            // Aksi berdasarkan status undangan
+                            if ($row['status'] == 'Approved') {
+                                echo "<a href='download_guest.php?id_guest=" . $row['id_guest'] . "'>Download Surat</a>";
+                            } else {
+                                echo "<a href='guest_crud.php?action=update&id_guest=" . $row['id_guest'] . "'>Edit</a> | ";
+                                echo "<a href='guest_crud.php?action=delete&id_guest=" . $row['id_guest'] . "'>Hapus</a>";
+                            }
+                            echo "</td>";
+                            echo "</tr>";
                         }
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </table>
+                        ?>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- =========== Scripts =========  -->

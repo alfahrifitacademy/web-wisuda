@@ -52,6 +52,16 @@ if (isset($_GET['hapus_pengumuman'])) {
     exit;
 }
 
+// Ambil data admin dari database berdasarkan admin_id di session
+$admin_id = $_SESSION['admin'];
+$query = "SELECT photo FROM admin WHERE id_admin = '$admin_id'";
+$result = mysqli_query($koneksi, $query);
+$admin = mysqli_fetch_assoc($result);
+
+// Tentukan path foto profil atau default
+$foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
+    ? "../" . $admin['photo']
+    : "/web-wisuda2/assets/img/default-profile.svg";
 ?>
 
 <!DOCTYPE html>
@@ -153,7 +163,9 @@ if (isset($_GET['hapus_pengumuman'])) {
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
                 <div class="user">
-                    <img src="assets/imgs/customer01.jpg" alt="pp">
+                    <a href="profile_settings.php">
+                        <img src="<?= $foto_profile; ?>" alt="Foto Profil" style="cursor: pointer; width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    </a>
                 </div>
             </div>
 
