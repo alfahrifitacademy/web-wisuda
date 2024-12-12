@@ -84,7 +84,6 @@ $result = mysqli_query($koneksi, $query);
     <!-- homepage content start -->
     <main>
         <!-- hero section start -->
-        <div class="underlay"></div>
         <section class="hero" id="home">
             <div class="container d-lg-flex align-items-center">
                 <div class="hero_content">

@@ -155,7 +155,6 @@ $koneksi->close();
                     </div>
                 </div>
 
-
                 <!-- Topbar dengan Foto Profil -->
                 <div class="user">
                     <a href="profile.php">
@@ -167,7 +166,7 @@ $koneksi->close();
             <!-- ============ Main Dashboard Content =========== -->
             <div class="dashboard-content">
                 <div class="welcome-section">
-                    <h1>Selamat Datang, <span class="highlight"><?php echo htmlspecialchars($nama_user); ?>!</span></h1>
+                    <h1>SELAMAT DATANG DI WEBSITE PENDAFTARAN WISUDA, <span class="highlight"><?php echo htmlspecialchars($nama_user); ?>!</span></h1>
                     <p>Ini adalah dashboard utama Anda, di mana Anda dapat mengakses semua fitur yang tersedia.</p>
                 </div>
 

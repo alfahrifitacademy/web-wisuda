@@ -326,7 +326,7 @@ form button[type="submit"]:hover {
 
 /* Style tambahan untuk tabel dan pesan */
 .content-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -341,6 +341,29 @@ form button[type="submit"]:hover {
   color: #333;
   font-size: 20px;
   margin-bottom: 10px;
+}
+/* Styling untuk link Tambah Undangan */
+.tambah-undangan {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s;
+  display: inline-block;
+}
+
+/* Efek hover untuk link Tambah Undangan */
+.tambah-undangan:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Efek fokus (focus) untuk aksesibilitas */
+.tambah-undangan:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .table-container {

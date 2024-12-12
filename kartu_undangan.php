@@ -166,7 +166,7 @@ $invitations_result = $koneksi->query($query);
 
                 <!-- Tabel untuk mengelola undangan baru -->
                 <h2>Daftar Undangan</h2>
-                <p><a href="guest_crud.php?action=create">+ Tambah Undangan</a></p>
+                <p><a href="guest_crud.php?action=create" class="tambah-undangan">+ Tambah Undangan</a></p>
                 <div class="table-container">
                     <table border="1">
                         <tr>
