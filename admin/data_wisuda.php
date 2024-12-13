@@ -68,14 +68,12 @@ if (isset($_POST['update_wisuda'])) {
     $tgl_wisuda = $_POST['tgl_wisuda'];
     $waktu = $_POST['waktu'];
 
-    // Update tgl_wisuda dan waktu pada semua dokumen
-    $update_query = "UPDATE dokumen SET tgl_wisuda='$tgl_wisuda', waktu='$waktu'";
-
-    // Eksekusi query
+    // Update hanya untuk status approved
+    $update_query = "UPDATE dokumen SET tgl_wisuda='$tgl_wisuda', waktu='$waktu' WHERE status='approved'";
     $result = mysqli_query($koneksi, $update_query);
 
     if ($result) {
-        echo "<script>alert('Tanggal Wisuda dan Waktu berhasil diperbarui untuk semua dokumen');</script>";
+        echo "<script>alert('Tanggal Wisuda dan Waktu berhasil diperbarui untuk semua dokumen dengan status approved');</script>";
     } else {
         echo "<script>alert('Gagal memperbarui data');</script>";
     }
@@ -84,6 +82,7 @@ if (isset($_POST['update_wisuda'])) {
     header("Location: data_wisuda.php");
     exit;
 }
+
 
 // Ambil data admin dari database berdasarkan admin_id di session
 $admin_id = $_SESSION['admin'];
@@ -278,10 +277,14 @@ $foto_profile = !empty($admin['photo']) && file_exists("../" . $admin['photo'])
                                     </span>
                                 </td>
                                 <td>
-                                    <?= !empty($user['tgl_wisuda']) ? date("d F Y", strtotime($user['tgl_wisuda'])) : 'Belum ditentukan'; ?>
+                                    <?= $user['status'] === 'approved' && !empty($user['tgl_wisuda'])
+                                        ? date("d F Y", strtotime($user['tgl_wisuda']))
+                                        : 'Belum ditentukan'; ?>
                                 </td>
                                 <td>
-                                    <?= !empty($user['waktu']) ? date("H:i", strtotime($user['waktu'])) : 'Belum ditentukan'; ?>
+                                    <?= $user['status'] === 'approved' && !empty($user['waktu'])
+                                        ? date("H:i", strtotime($user['waktu']))
+                                        : 'Belum ditentukan'; ?>
                                 </td>
                                 <td><?= htmlspecialchars($user['created_at'] ?? 'Tidak tersedia'); ?></td>
                                 <td><a href="detail_dokumen.php?id_users=<?= $user['id_users']; ?>" class="btn-cek">Cek Berkas</a></td>
