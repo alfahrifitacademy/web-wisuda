@@ -145,7 +145,18 @@ if (isset($_GET['id_guest']) && is_numeric($_GET['id_guest'])) {
             $pdf->SetFont('Arial', '', 12);
             $pdf->MultiCell(0, 10,
                 "Dengan hormat,\n"
-                . "Sehubungan dengan akan diselenggarakan acara Wisuda Lulusan Program Sarjana STMIK Bandung melalui surat ini kami bermaksud mengundang Bapak/Ibu Orang Tua/Wali Wisudawan untuk dapat menghadiri kegiatan Wisuda tersebut, yang dilaksanakan pada :\n"
+                . "Sehubungan dengan akan diselenggarakan acara Wisuda Lulusan Program Sarjana STMIK Bandung :\n"
+            );
+            // Geser ke kanan sedikit untuk Nama, NIM, Tanggal, Waktu, dan Tempat
+            $pdf->SetX(20);  // Geser sedikit ke kanan dari posisi sebelumnya
+            $pdf->MultiCell(0, 10, "Nama: $nama\n");
+            $pdf->SetX(20);  // Geser sedikit ke kanan untuk NIM
+            $pdf->MultiCell(0, 10, "NIM: $nim\n");
+            $pdf->SetFont('Arial', '', 12);
+            $pdf->MultiCell(
+                0,
+                10,
+                "Melalui surat ini kami bermaksud mengundang Bapak/Ibu Orang Tua/Wali Wisudawan untuk dapat menghadiri kegiatan Wisuda tersebut, yang akan dilaksanakan pada :\n"
             );
             $pdf->SetX(20);  // Geser sedikit ke kanan untuk Tanggal
             $pdf->MultiCell(0, 10, "Tanggal: $tgl_wisuda\n");

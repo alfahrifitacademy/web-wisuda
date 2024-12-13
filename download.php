@@ -125,7 +125,7 @@ if (isset($_GET['id_users']) && is_numeric($_GET['id_users'])) {
             // Nomor Surat, Lampiran, dan Perihal
             $pdf->SetFont('Arial', '', 12);
             $pdf->Cell(0, 10, 'Nomor: ' . $nomor_surat, 0, 1);
-            $pdf->Cell(0, 10, 'Lampiran: 1 Lembar', 0, 1);
+            $pdf->Cell(0, 10, 'Lampiran: -', 0, 1);
             $pdf->Cell(0, 10, 'Perihal: Undangan Wisuda', 0, 1);
             $pdf->Ln(5);  // Jarak antar bagian Nomor, Lampiran, dan Perihal
 
