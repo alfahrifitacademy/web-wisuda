@@ -174,7 +174,7 @@ $result = mysqli_query($koneksi, $query);
                 <div class="popular_header">
                     <h2 class="popular_header-title" data-aos="fade-up">Pengumuman</h2>
                     <p class="popular_header-text" data-aos="fade-down">
-                        Timeline Pendaftaran Wisuda Periode XXXIV TA 2024/2025
+                        Informasi Pengumuman Wisuda :
                     </p>
 
                     <?php if (mysqli_num_rows($result) > 0): ?>
