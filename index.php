@@ -172,7 +172,7 @@ $result = mysqli_query($koneksi, $query);
         <section class="popular" id="pengunguman">
             <div class="container">
                 <div class="popular_header">
-                    <h2 class="popular_header-title" data-aos="fade-up">Pengunguman</h2>
+                    <h2 class="popular_header-title" data-aos="fade-up">Pengumuman</h2>
                     <p class="popular_header-text" data-aos="fade-down">
                         Timeline Pendaftaran Wisuda Periode XXXIV TA 2024/2025
                     </p>
