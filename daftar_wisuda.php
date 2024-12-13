@@ -76,10 +76,10 @@ if (isset($_SESSION['daftar_wisuda']) && $_SESSION['daftar_wisuda'] === true) {
 
                     <h2>Form Upload Dokumen Pendaftaran Wisuda</h2>
                     <form action="upload_dokumen.php" method="post" enctype="multipart/form-data">
-                        <label for="file_akte">Upload Fotokopi Akte Kelahiran (PDF):</label><br>
+                        <label for="file_akte">Upload Scan Akte Kelahiran (PDF):</label><br>
                         <input type="file" name="file_akte" id="file_akte" accept="application/pdf" required><br><br>
 
-                        <label for="file_ijasa">Upload Fotokopi Ijazah Terakhir (PDF):</label><br>
+                        <label for="file_ijasa">Upload Scan Ijazah Terakhir (PDF):</label><br>
                         <input type="file" name="file_ijasa" id="file_ijasa" accept="application/pdf" required><br><br>
 
                         <label for="file_pembayaran">Upload Bukti Pembayaran Wisuda (PNG/JPG):</label><br>
