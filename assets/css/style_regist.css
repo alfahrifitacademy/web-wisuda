@@ -94,3 +94,26 @@ a:hover {
 .alert.error {
     background-color: #f44336; /* Red */
 }
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    width: 100%;
+    padding-right: 40px; /* Beri ruang untuk ikon */
+    box-sizing: border-box; /* Pastikan padding tidak memengaruhi ukuran box */
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+    font-size: 1.2em;
+}
+

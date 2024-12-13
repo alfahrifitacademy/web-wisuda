@@ -43,31 +43,59 @@ unset($_SESSION['success_message']);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <title>Login</title>
     <link rel="stylesheet" href="assets/css/style_regist.css">
 </head>
+
 <body>
-<div class="alert-container">
-    <!-- Tampilkan pesan jika ada -->
-    <?php if ($success_message): ?>
-        <div class="alert success">
-            <?php echo $success_message; ?>
-        </div>
-    <?php endif; ?>
-</div>
-<div class="form-container">
-    <h2>Login</h2>
-    <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
-    <form action="login.php" method="POST">
-        <input type="text" name="NIM" placeholder="NIM" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        <a href="register.php">Belum punya akun? Daftar</a>
-    </form>
-</div>
+    <div class="alert-container">
+        <!-- Tampilkan pesan jika ada -->
+        <?php if ($success_message): ?>
+            <div class="alert success">
+                <?php echo $success_message; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="form-container">
+        <h2>Login</h2>
+        <?php if (isset($error)) {
+            echo "<p style='color: red;'>$error</p>";
+        } ?>
+        <form action="login.php" method="POST">
+            <input type="text" name="NIM" placeholder="NIM" required>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="togglePassword" class="toggle-password">
+                    <ion-icon name="eye-outline"></ion-icon>
+                </span>
+            </div>
+            <button type="submit">Login</button>
+            <a href="register.php">Belum punya akun? Daftar</a>
+        </form>
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector("#togglePassword");
+        const passwordField = document.querySelector("#password");
+
+        togglePassword.addEventListener("click", function() {
+            // Toggle the type attribute
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+
+            // Toggle the icon
+            this.innerHTML = type === "password" ?
+                '<ion-icon name="eye-outline"></ion-icon>' :
+                '<ion-icon name="eye-off-outline"></ion-icon>';
+        });
+    </script>
 
 </body>
+
 </html>
