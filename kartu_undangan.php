@@ -17,8 +17,8 @@ $result = mysqli_query($koneksi, $query);
 $user = mysqli_fetch_assoc($result);
 
 // Tentukan path foto profil atau default
-$foto_profile = !empty($user['foto_profile']) && file_exists("../" . $user['foto_profile'])
-    ? "../" . $user['foto_profile']
+$foto_profile = !empty($user['foto_profile']) && file_exists($user['foto_profile'])
+    ? $user['foto_profile']
     : "assets/img/default-profile.svg";
 
 // Query untuk menampilkan dokumen yang sudah disetujui (approved) milik pengguna yang login

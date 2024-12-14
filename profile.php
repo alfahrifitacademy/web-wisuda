@@ -22,7 +22,7 @@ $fakultasResult = mysqli_query($koneksi, $fakultasQuery);
 
 // Ganti Foto Profil
 if (isset($_POST['update_photo'])) {
-    $targetDir = "../uploads/foto_profile/"; // Direktori penyimpanan
+    $targetDir = "uploads/foto_profile/"; // Direktori penyimpanan
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0777, true); // Buat folder jika belum ada
     }
@@ -36,8 +36,8 @@ if (isset($_POST['update_photo'])) {
     if (in_array($fileType, $allowedTypes)) {
         if (move_uploaded_file($_FILES["profile_photo"]["tmp_name"], $targetFilePath)) {
             // Hapus foto profil lama jika ada
-            if ($user['foto_profile'] && file_exists("../" . $user['foto_profile'])) {
-                unlink("../" . $user['foto_profile']);
+            if ($user['foto_profile'] && file_exists($user['foto_profile'])) {
+                unlink($user['foto_profile']);
             }
 
             // Update foto profil di database dengan path relatif
@@ -93,7 +93,7 @@ if (isset($_POST['update_profile'])) {
                 <form action="profile.php" method="POST" enctype="multipart/form-data" class="avatar-form">
                     <div class="avatar-container">
                         <label class="avatar-title">Avatar</label>
-                        <img id="avatarPreview" src="<?= $user['foto_profile'] ? "../" . $user['foto_profile'] : "assets/img/default-profile.svg"; ?>" alt="Profile Avatar" class="avatar-img">
+                        <img id="avatarPreview" src="<?= $user['foto_profile'] ? $user['foto_profile'] : "assets/img/default-profile.svg"; ?>" alt="Profile Avatar" class="avatar-img">
                     </div>
                     <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*" onchange="previewAvatar()">
                     <button type="submit" name="update_photo" class="submit-button">Update Foto</button>
